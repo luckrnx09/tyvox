@@ -2,6 +2,8 @@
   "name": "tyvox-desktop",
   "version": "0.0.1",
   "private": true,
+  "homepage": "https://github.com/luckrnx09/tyvox",
+  "author": "luckrnx09",
   "type": "module",
   "main": "out/main/index.js",
   "scripts": {
