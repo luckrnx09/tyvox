@@ -102,7 +102,7 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libasound2-dev libpulse-dev libx11-dev libxtst-dev libxinerama-dev libxkbcommon-dev
+          sudo apt-get install -y libasound2-dev libpulse-dev libx11-dev libxtst-dev libxinerama-dev libxrandr-dev libxkbcommon-dev
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
