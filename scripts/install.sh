@@ -20,30 +20,36 @@ detect_platform() {
 
 install_macos() {
   local tag="$1"
-  local dmg_url
-  dmg_url=$(curl -s "https://api.github.com/repos/${REPO}/releases/tags/${tag}" |
+  local dmg_urls dmg_url
+  dmg_urls=$(curl -fsSL "https://api.github.com/repos/${REPO}/releases/tags/${tag}" |
     grep '"browser_download_url":' |
-    grep '\.dmg' |
-    sed -E 's/.*"([^"]+)".*/\1/' | head -n 1)
+    sed -E 's/.*"([^"]+)".*/\1/' |
+    grep '\.dmg$')
+
+  if [ "$(uname -m)" = "arm64" ]; then
+    dmg_url=$(echo "$dmg_urls" | grep -- '-arm64\.dmg$' | head -n 1)
+  else
+    dmg_url=$(echo "$dmg_urls" | grep -v -- '-arm64\.dmg$' | head -n 1)
+  fi
 
   if [ -z "$dmg_url" ]; then
-    echo "No .dmg asset found for ${tag}" >&2
+    echo "No .dmg asset found for ${tag} ($(uname -m))" >&2
     exit 1
   fi
 
-  local tmpdir
+  local tmpdir mount_dir
   tmpdir=$(mktemp -d)
-  trap 'rm -rf "$tmpdir"' EXIT
+  mount_dir="${tmpdir}/mnt"
+  mkdir -p "$mount_dir"
+  trap "hdiutil detach '${mount_dir}' -quiet >/dev/null 2>&1 || true; rm -rf '${tmpdir}'" EXIT
 
   echo "Downloading ${dmg_url}..."
   curl -fsSL -o "${tmpdir}/Tyvox.dmg" "$dmg_url"
 
-  local mount_point
-  mount_point=$(hdiutil attach "${tmpdir}/Tyvox.dmg" -nobrowse | awk -F '\t' 'END {print $NF}' | sed 's/[[:space:]]*$//')
-  trap 'hdiutil detach "$mount_point" >/dev/null 2>&1 || true; rm -rf "$tmpdir"' EXIT
+  hdiutil attach "${tmpdir}/Tyvox.dmg" -nobrowse -readonly -mountpoint "$mount_dir" -quiet
 
-  cp -R "${mount_point}/Tyvox.app" /Applications/
-  hdiutil detach "$mount_point" >/dev/null 2>&1 || true
+  cp -R "${mount_dir}/Tyvox.app" /Applications/
+  hdiutil detach "$mount_dir" -quiet >/dev/null 2>&1 || true
 
   echo "Removing Gatekeeper quarantine and self-signing ${APP_NAME}..."
   sudo xattr -rd com.apple.quarantine "/Applications/${APP_NAME}.app"
@@ -58,8 +64,8 @@ install_linux() {
   local appimage_url
   appimage_url=$(curl -fsSL "https://api.github.com/repos/${REPO}/releases/tags/${tag}" |
     grep '"browser_download_url":' |
-    grep '\.AppImage' |
-    sed -E 's/.*"([^"]+)".*/\1/' | head -n 1)
+    sed -E 's/.*"([^"]+)".*/\1/' |
+    grep '\.AppImage$' | head -n 1)
 
   if [ -z "$appimage_url" ]; then
     echo "No .AppImage asset found for ${tag}" >&2
