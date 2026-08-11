@@ -40,7 +40,7 @@ Copy and run the command for your platform:
 - **macOS / Linux**
 
   ```bash
-  curl -fsSL https://raw.githubusercontent.com/luckrnx09/tyvox/master/scripts/install.sh | sh
+  curl -fsSL https://raw.githubusercontent.com/luckrnx09/tyvox/master/scripts/install.sh | bash
   ```
 
 - **Windows** (PowerShell)
