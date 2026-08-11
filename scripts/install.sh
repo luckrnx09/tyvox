@@ -39,7 +39,7 @@ install_macos() {
   curl -fsSL -o "${tmpdir}/Tyvox.dmg" "$dmg_url"
 
   local mount_point
-  mount_point=$(hdiutil attach "${tmpdir}/Tyvox.dmg" -nobrowse | awk 'END {print $NF}')
+  mount_point=$(hdiutil attach "${tmpdir}/Tyvox.dmg" -nobrowse | awk -F '\t' 'END {print $NF}' | sed 's/[[:space:]]*$//')
   trap 'hdiutil detach "$mount_point" >/dev/null 2>&1 || true; rm -rf "$tmpdir"' EXIT
 
   cp -R "${mount_point}/Tyvox.app" /Applications/
