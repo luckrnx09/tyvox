@@ -1,0 +1,1015 @@
+openapi: 3.1.0
+info:
+  title: Tyvox API
+  version: 0.0.1
+components:
+  schemas: {}
+  parameters: {}
+paths:
+  /api/asr/readiness:
+    get:
+      operationId: checkASRReadiness
+      tags:
+        - ASR
+      summary: Check ASR provider readiness
+      responses:
+        "200":
+          description: ASR readiness
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ready:
+                    type: boolean
+                  error:
+                    type: string
+                required:
+                  - ready
+  /api/asr/models:
+    get:
+      operationId: listASRModels
+      tags:
+        - ASR
+      summary: List ASR providers and model statuses
+      responses:
+        "200":
+          description: Provider groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    name:
+                      type: string
+                    modelSelection:
+                      type: string
+                      enum:
+                        - fixed
+                        - custom
+                    models:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          name:
+                            type: string
+                          status:
+                            type: string
+                            enum:
+                              - not_ready
+                              - preparing
+                              - ready
+                              - error
+                          progress:
+                            type: number
+                            minimum: 0
+                            maximum: 1
+                          error:
+                            type: string
+                        required:
+                          - id
+                          - name
+                          - status
+                  required:
+                    - id
+                    - name
+                    - modelSelection
+                    - models
+  /api/asr/models/{id}/prepare:
+    post:
+      operationId: prepareASRModel
+      tags:
+        - ASR
+      summary: Prepare an ASR model
+      parameters:
+        - schema:
+            type: string
+          required: true
+          name: id
+          in: path
+      responses:
+        "200":
+          description: Preparation triggered
+        "404":
+          description: Model not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                    required:
+                      - code
+                      - message
+                required:
+                  - error
+  /api/asr/transcribe/{sessionId}/chunk:
+    post:
+      operationId: sendTranscribeChunk
+      tags:
+        - ASR
+      summary: Upload audio chunk during recording
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: sessionId
+          in: path
+      requestBody:
+        required: true
+        content:
+          audio/pcm:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "200":
+          description: Chunk received
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  receivedBytes:
+                    type: integer
+                required:
+                  - receivedBytes
+  /api/asr/transcribe/{sessionId}/finalize:
+    post:
+      operationId: finalizeTranscribe
+      tags:
+        - ASR
+      summary: Finalize recording and run ASR
+      parameters:
+        - schema:
+            type: string
+            format: uuid
+          required: true
+          name: sessionId
+          in: path
+      responses:
+        "200":
+          description: Transcription result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  text:
+                    type: string
+                  language:
+                    type: string
+                  durationMs:
+                    type: integer
+                required:
+                  - text
+                  - durationMs
+        "404":
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                    required:
+                      - code
+                      - message
+                required:
+                  - error
+  /api/transform:
+    post:
+      operationId: transformText
+      tags:
+        - Transform
+      summary: "Transform text: polish, translate, or enrich (SSE streaming)"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  minLength: 1
+                enrichOptions:
+                  type: array
+                  items:
+                    oneOf:
+                      - type: object
+                        properties:
+                          type:
+                            type: string
+                            enum:
+                              - translate
+                          payload:
+                            type: object
+                            properties:
+                              target:
+                                type: string
+                            required:
+                              - target
+                        required:
+                          - type
+                          - payload
+                timeoutScale:
+                  type: integer
+                  minimum: 1
+                  maximum: 5
+              required:
+                - text
+                - enrichOptions
+      responses:
+        "200":
+          description: SSE stream of transform events
+          content:
+            text/event-stream:
+              schema:
+                oneOf:
+                  - type: object
+                    properties:
+                      event:
+                        type: string
+                        enum:
+                          - thinking
+                      data:
+                        type: object
+                        properties: {}
+                        additionalProperties: {}
+                    required:
+                      - event
+                      - data
+                  - type: object
+                    properties:
+                      event:
+                        type: string
+                        enum:
+                          - chunk
+                      data:
+                        type: object
+                        properties:
+                          text:
+                            type: string
+                        required:
+                          - text
+                    required:
+                      - event
+                      - data
+                  - type: object
+                    properties:
+                      event:
+                        type: string
+                        enum:
+                          - done
+                      data:
+                        type: object
+                        properties:
+                          text:
+                            type: string
+                        required:
+                          - text
+                    required:
+                      - event
+                      - data
+                  - type: object
+                    properties:
+                      event:
+                        type: string
+                        enum:
+                          - error
+                      data:
+                        type: object
+                        properties:
+                          code:
+                            type: string
+                          message:
+                            type: string
+                        required:
+                          - code
+                          - message
+                    required:
+                      - event
+                      - data
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                    required:
+                      - code
+                      - message
+                required:
+                  - error
+  /api/vocabulary:
+    get:
+      operationId: getVocabulary
+      tags:
+        - Vocabulary
+      summary: Get user vocabulary
+      responses:
+        "200":
+          description: Vocabulary data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  vocabulary:
+                    type: object
+                    additionalProperties:
+                      type: number
+                required:
+                  - vocabulary
+    delete:
+      operationId: clearVocabulary
+      tags:
+        - Vocabulary
+      summary: Clear all vocabulary
+      responses:
+        "200":
+          description: Cleared
+  /api/vocabulary/vocabulary/{entry}:
+    post:
+      operationId: addEntry
+      tags:
+        - Vocabulary
+      summary: Add vocabulary entry
+      parameters:
+        - schema:
+            type: string
+          required: true
+          name: entry
+          in: path
+      responses:
+        "200":
+          description: Added
+    delete:
+      operationId: deleteEntry
+      tags:
+        - Vocabulary
+      summary: Delete vocabulary entry
+      parameters:
+        - schema:
+            type: string
+          required: true
+          name: entry
+          in: path
+      responses:
+        "200":
+          description: Deleted
+  /api/vocabulary/vocabulary/{entry}/rename:
+    post:
+      operationId: renameEntry
+      tags:
+        - Vocabulary
+      summary: Rename vocabulary entry
+      parameters:
+        - schema:
+            type: string
+          required: true
+          name: entry
+          in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newEntry:
+                  type: string
+                  minLength: 1
+              required:
+                - newEntry
+      responses:
+        "200":
+          description: Renamed
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                    required:
+                      - code
+                      - message
+                required:
+                  - error
+  /api/user_config:
+    get:
+      operationId: getUserConfig
+      tags:
+        - User Config
+      summary: Get user config
+      responses:
+        "200":
+          description: User config
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: number
+                    enum:
+                      - 1
+                  desktop:
+                    type: object
+                    properties:
+                      hotkey:
+                        type: object
+                        properties:
+                          mode:
+                            type: string
+                            enum:
+                              - ptt
+                              - toggle
+                        required:
+                          - mode
+                      actions:
+                        type: object
+                        properties:
+                          basic:
+                            type: object
+                            properties:
+                              hotkey:
+                                type: object
+                                properties:
+                                  accelerator:
+                                    type: string
+                                required:
+                                  - accelerator
+                            required:
+                              - hotkey
+                          translate:
+                            type: object
+                            properties:
+                              hotkey:
+                                type: object
+                                properties:
+                                  accelerator:
+                                    type: string
+                                required:
+                                  - accelerator
+                              payload:
+                                type: object
+                                properties:
+                                  target:
+                                    type: string
+                                required:
+                                  - target
+                            required:
+                              - hotkey
+                              - payload
+                        required:
+                          - basic
+                          - translate
+                      microphone:
+                        type: object
+                        properties:
+                          deviceId:
+                            type: string
+                        required:
+                          - deviceId
+                      uiLocale:
+                        type: string
+                        enum:
+                          - en
+                          - zh
+                    required:
+                      - hotkey
+                      - actions
+                      - microphone
+                      - uiLocale
+                  llm:
+                    type: object
+                    properties:
+                      provider:
+                        type: string
+                        enum:
+                          - ark
+                          - deepseek
+                          - siliconflow
+                          - openai
+                          - openrouter
+                          - minimax
+                          - stepfun
+                          - dashscope
+                          - zhipu
+                          - moonshot
+                          - ollama
+                          - gemini
+                          - groq
+                          - custom
+                      apiKey:
+                        type: string
+                      baseUrl:
+                        type: string
+                      model:
+                        type: string
+                      tone:
+                        type: string
+                        enum:
+                          - professional
+                          - casual
+                          - concise
+                          - formal
+                      thinkingEnabled:
+                        type: boolean
+                        default: false
+                      extraBody:
+                        type: string
+                    required:
+                      - provider
+                      - apiKey
+                      - baseUrl
+                      - model
+                      - tone
+                  speech:
+                    type: object
+                    properties:
+                      provider:
+                        type: string
+                        enum:
+                          - whisper:small
+                          - whisper:medium
+                          - whisper:large-v3
+                          - sensevoice:small
+                      apiKey:
+                        type: string
+                      url:
+                        type: string
+                      languages:
+                        type: array
+                        items:
+                          type: string
+                        maxItems: 3
+                    required:
+                      - provider
+                      - languages
+                required:
+                  - version
+                  - desktop
+                  - llm
+                  - speech
+    put:
+      operationId: updateUserConfig
+      tags:
+        - User Config
+      summary: Update user config (partial merge)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                version:
+                  type: number
+                  enum:
+                    - 1
+                desktop:
+                  type: object
+                  properties:
+                    hotkey:
+                      type: object
+                      properties:
+                        mode:
+                          type: string
+                          enum:
+                            - ptt
+                            - toggle
+                    actions:
+                      type: object
+                      properties:
+                        basic:
+                          type: object
+                          properties:
+                            hotkey:
+                              type: object
+                              properties:
+                                accelerator:
+                                  type: string
+                        translate:
+                          type: object
+                          properties:
+                            hotkey:
+                              type: object
+                              properties:
+                                accelerator:
+                                  type: string
+                            payload:
+                              type: object
+                              properties:
+                                target:
+                                  type: string
+                    microphone:
+                      type: object
+                      properties:
+                        deviceId:
+                          type: string
+                    uiLocale:
+                      type: string
+                      enum:
+                        - en
+                        - zh
+                llm:
+                  type: object
+                  properties:
+                    provider:
+                      type: string
+                      enum:
+                        - ark
+                        - deepseek
+                        - siliconflow
+                        - openai
+                        - openrouter
+                        - minimax
+                        - stepfun
+                        - dashscope
+                        - zhipu
+                        - moonshot
+                        - ollama
+                        - gemini
+                        - groq
+                        - custom
+                    apiKey:
+                      type: string
+                    baseUrl:
+                      type: string
+                    model:
+                      type: string
+                    tone:
+                      type: string
+                      enum:
+                        - professional
+                        - casual
+                        - concise
+                        - formal
+                    thinkingEnabled:
+                      type: boolean
+                      default: false
+                    extraBody:
+                      type: string
+                speech:
+                  type: object
+                  properties:
+                    provider:
+                      type: string
+                      enum:
+                        - whisper:small
+                        - whisper:medium
+                        - whisper:large-v3
+                        - sensevoice:small
+                    apiKey:
+                      type: string
+                    url:
+                      type: string
+                    languages:
+                      type: array
+                      items:
+                        type: string
+                      maxItems: 3
+      responses:
+        "200":
+          description: Merged config
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  version:
+                    type: number
+                    enum:
+                      - 1
+                  desktop:
+                    type: object
+                    properties:
+                      hotkey:
+                        type: object
+                        properties:
+                          mode:
+                            type: string
+                            enum:
+                              - ptt
+                              - toggle
+                        required:
+                          - mode
+                      actions:
+                        type: object
+                        properties:
+                          basic:
+                            type: object
+                            properties:
+                              hotkey:
+                                type: object
+                                properties:
+                                  accelerator:
+                                    type: string
+                                required:
+                                  - accelerator
+                            required:
+                              - hotkey
+                          translate:
+                            type: object
+                            properties:
+                              hotkey:
+                                type: object
+                                properties:
+                                  accelerator:
+                                    type: string
+                                required:
+                                  - accelerator
+                              payload:
+                                type: object
+                                properties:
+                                  target:
+                                    type: string
+                                required:
+                                  - target
+                            required:
+                              - hotkey
+                              - payload
+                        required:
+                          - basic
+                          - translate
+                      microphone:
+                        type: object
+                        properties:
+                          deviceId:
+                            type: string
+                        required:
+                          - deviceId
+                      uiLocale:
+                        type: string
+                        enum:
+                          - en
+                          - zh
+                    required:
+                      - hotkey
+                      - actions
+                      - microphone
+                      - uiLocale
+                  llm:
+                    type: object
+                    properties:
+                      provider:
+                        type: string
+                        enum:
+                          - ark
+                          - deepseek
+                          - siliconflow
+                          - openai
+                          - openrouter
+                          - minimax
+                          - stepfun
+                          - dashscope
+                          - zhipu
+                          - moonshot
+                          - ollama
+                          - gemini
+                          - groq
+                          - custom
+                      apiKey:
+                        type: string
+                      baseUrl:
+                        type: string
+                      model:
+                        type: string
+                      tone:
+                        type: string
+                        enum:
+                          - professional
+                          - casual
+                          - concise
+                          - formal
+                      thinkingEnabled:
+                        type: boolean
+                        default: false
+                      extraBody:
+                        type: string
+                    required:
+                      - provider
+                      - apiKey
+                      - baseUrl
+                      - model
+                      - tone
+                  speech:
+                    type: object
+                    properties:
+                      provider:
+                        type: string
+                        enum:
+                          - whisper:small
+                          - whisper:medium
+                          - whisper:large-v3
+                          - sensevoice:small
+                      apiKey:
+                        type: string
+                      url:
+                        type: string
+                      languages:
+                        type: array
+                        items:
+                          type: string
+                        maxItems: 3
+                    required:
+                      - provider
+                      - languages
+                required:
+                  - version
+                  - desktop
+                  - llm
+                  - speech
+  /api/logs:
+    post:
+      operationId: postClientLogs
+      tags:
+        - Logs
+      summary: Upload client log entries
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                entries:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      level:
+                        type: string
+                        enum:
+                          - debug
+                          - info
+                          - warn
+                          - error
+                      message:
+                        type: string
+                      sessionId:
+                        type: string
+                      stack:
+                        type: string
+                      extra:
+                        type: object
+                        additionalProperties: {}
+                    required:
+                      - level
+                      - message
+                  maxItems: 50
+              required:
+                - entries
+      responses:
+        "200":
+          description: Logs accepted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  received:
+                    type: integer
+                required:
+                  - received
+        "400":
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                      message:
+                        type: string
+                    required:
+                      - code
+                      - message
+                required:
+                  - error
+  /api/llm/providers:
+    get:
+      operationId: listLLMProviders
+      tags:
+        - LLM
+      summary: List supported LLM providers
+      responses:
+        "200":
+          description: Supported providers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      enum:
+                        - ark
+                        - deepseek
+                        - siliconflow
+                        - openai
+                        - openrouter
+                        - minimax
+                        - stepfun
+                        - dashscope
+                        - zhipu
+                        - moonshot
+                        - ollama
+                        - gemini
+                        - groq
+                        - custom
+                    name:
+                      type: string
+                    defaultBaseUrl:
+                      type: string
+                  required:
+                    - id
+                    - name
+                    - defaultBaseUrl
+  /api/llm/readiness:
+    get:
+      operationId: checkLLMReadiness
+      tags:
+        - LLM
+      summary: Check LLM provider readiness
+      responses:
+        "200":
+          description: LLM readiness
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ready:
+                    type: boolean
+                  error:
+                    type: string
+                required:
+                  - ready
+  /health:
+    get:
+      operationId: healthCheck
+      tags:
+        - Health
+      summary: Health check
+      responses:
+        "200":
+          description: Health status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  version:
+                    type: string
+                required:
+                  - status
+                  - version
+webhooks: {}

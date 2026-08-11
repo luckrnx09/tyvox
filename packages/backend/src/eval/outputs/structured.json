@@ -1,0 +1,137 @@
+{
+  "timestamp": "2026-08-10T08:24:22.191Z",
+  "polisherModel": "deepseek-v4-flash",
+  "judgeModel": "deepseek-v4-flash",
+  "cases": [
+    {
+      "name": "keeps commands verbatim",
+      "rule": "keepStructuredContent",
+      "status": "PASS",
+      "input": "first git pull, then git checkout main and git merge develop",
+      "output": "First, run `git pull`. Then, run `git checkout main` and `git merge develop`.",
+      "verdicts": [
+        {
+          "label": "expect: git pull",
+          "verdict": "pass",
+          "reason": "The output contains the exact text 'git pull'."
+        },
+        {
+          "label": "expect: git checkout main",
+          "verdict": "pass",
+          "reason": "The output contains the exact text 'git checkout main'."
+        },
+        {
+          "label": "expect: git merge develop",
+          "verdict": "pass",
+          "reason": "The output contains the exact text 'git merge develop'."
+        },
+        {
+          "label": "forbid: the commands are grammar-corrected or rewritten",
+          "verdict": "pass",
+          "reason": "The commands are preserved verbatim, only punctuation and capitalization were added."
+        },
+        {
+          "label": "fidelity: meaning preserved",
+          "verdict": "pass",
+          "reason": "The output conveys the same sequence of commands without adding or omitting any information."
+        },
+        {
+          "label": "fidelity: no invented content",
+          "verdict": "pass",
+          "reason": "The output only rewrites the input, adding no extra ideas or explanations."
+        },
+        {
+          "label": "language: standard written form",
+          "verdict": "pass",
+          "reason": "The output uses standard written English with proper capitalization and sentence structure."
+        },
+        {
+          "label": "mechanics: punctuation and grammar",
+          "verdict": "pass",
+          "reason": "The output has correct punctuation, grammar, and spacing."
+        }
+      ],
+      "error": ""
+    },
+    {
+      "name": "keeps urls verbatim",
+      "rule": "keepStructuredContent",
+      "status": "PASS",
+      "input": "search it on google dot com",
+      "output": "Search it on google.com.",
+      "verdicts": [
+        {
+          "label": "expect: google.com",
+          "verdict": "pass",
+          "reason": "The output contains the exact URL 'google.com' in proper URL form."
+        },
+        {
+          "label": "forbid: the URL is spelled out or altered",
+          "verdict": "pass",
+          "reason": "The URL is not spelled out or altered; it is written as a standard URL."
+        },
+        {
+          "label": "fidelity: meaning preserved",
+          "verdict": "pass",
+          "reason": "The output conveys the same meaning as the input, with no additions or omissions."
+        },
+        {
+          "label": "fidelity: no invented content",
+          "verdict": "pass",
+          "reason": "The output only rewrites the spoken text into written form without adding ideas or explanations."
+        },
+        {
+          "label": "language: standard written form",
+          "verdict": "pass",
+          "reason": "The output is in standard written English, appropriate for the spoken content."
+        },
+        {
+          "label": "mechanics: punctuation and grammar",
+          "verdict": "pass",
+          "reason": "The output uses correct punctuation, grammar, and spacing, including a period at the end."
+        }
+      ],
+      "error": ""
+    },
+    {
+      "name": "keeps code identifiers verbatim",
+      "rule": "keepStructuredContent",
+      "status": "PASS",
+      "input": "run the command with the flag dash dash verbose",
+      "output": "Run the command with the `--verbose` flag.",
+      "verdicts": [
+        {
+          "label": "expect: --verbose",
+          "verdict": "pass",
+          "reason": "The output contains the exact flag '--verbose'."
+        },
+        {
+          "label": "forbid: --verbose rewritten to English words",
+          "verdict": "pass",
+          "reason": "The flag is preserved verbatim, not rewritten to English words."
+        },
+        {
+          "label": "fidelity: meaning preserved",
+          "verdict": "pass",
+          "reason": "The output conveys the same instruction to run the command with the verbose flag, with no added or lost meaning."
+        },
+        {
+          "label": "fidelity: no invented content",
+          "verdict": "pass",
+          "reason": "The output is a direct rewrite of the instruction without adding any extra content."
+        },
+        {
+          "label": "language: standard written form",
+          "verdict": "pass",
+          "reason": "The output uses proper written English with correct capitalization and phrasing."
+        },
+        {
+          "label": "mechanics: punctuation and grammar",
+          "verdict": "pass",
+          "reason": "The output has correct punctuation, grammar, and spacing, including the backticks around the flag."
+        }
+      ],
+      "error": ""
+    }
+  ]
+}

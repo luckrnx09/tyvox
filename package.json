@@ -1,0 +1,46 @@
+{
+  "name": "tyvox",
+  "version": "0.0.1",
+  "description": "Your voice types for you.",
+  "keywords": [
+    "asr",
+    "speech-to-text",
+    "tyvox",
+    "voice-dictation",
+    "whisper"
+  ],
+  "homepage": "https://github.com/luckrnx09/tyvox#readme",
+  "bugs": {
+    "url": "https://github.com/luckrnx09/tyvox/issues"
+  },
+  "license": "MIT",
+  "author": "luckrnx09",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/luckrnx09/tyvox.git"
+  },
+  "scripts": {
+    "dev": "bash scripts/dev.sh",
+    "build": "pnpm -C packages/backend build && pnpm -C packages/desktop build",
+    "typecheck": "pnpm -C packages/sdk typecheck && pnpm -C packages/backend typecheck && pnpm -C packages/desktop typecheck",
+    "lint": "oxlint",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "lint:fix": "oxlint --fix",
+    "codegen": "pnpm -C packages/sdk generate:openapi && pnpm -C packages/sdk codegen",
+    "eval": "pnpm -C packages/backend eval",
+    "test": "pnpm -C packages/sdk test && pnpm -C packages/backend test && pnpm -C packages/desktop test",
+    "test:watch": "pnpm -C packages/desktop test:watch",
+    "release": "node scripts/release.mjs",
+    "pack:mac": "pnpm -C packages/desktop pack:mac",
+    "pack:linux": "pnpm -C packages/desktop pack:linux",
+    "pack:win": "pnpm -C packages/desktop pack:win",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "oxfmt": "^0.60.0",
+    "oxlint": "^1.75.0"
+  },
+  "packageManager": "pnpm@10.25.0"
+}

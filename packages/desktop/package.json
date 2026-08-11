@@ -1,0 +1,124 @@
+{
+  "name": "tyvox-desktop",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "out/main/index.js",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.web.json && tsc --noEmit -p tsconfig.node.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "pack:mac": "pnpm prepare:backend && electron-vite build && electron-builder --mac",
+    "pack:linux": "pnpm prepare:backend && electron-vite build && electron-builder --linux",
+    "pack:win": "pnpm prepare:backend && electron-vite build && electron-builder --win",
+    "test:e2e": "playwright test",
+    "prepare:backend": "node scripts/prepare-backend.mjs"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.2.0",
+    "@mui/material": "^9.2.0",
+    "@tyvox/sdk": "workspace:*",
+    "electron-updater": "^6.8.9",
+    "framer-motion": "^12.42.2",
+    "i18next": "^26.3.6",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-i18next": "^17.0.11",
+    "uiohook-napi": "^1.5.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "@vitest/coverage-v8": "^4.1.10",
+    "electron": "^39.0.0",
+    "electron-builder": "^26.15.3",
+    "electron-vite": "^5.0.0",
+    "jsdom": "^29.1.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.5",
+    "vitest": "^4.1.10"
+  },
+  "build": {
+    "appId": "com.tyvox.dictation",
+    "productName": "Tyvox",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "out/**/*",
+      "electron-src/resources/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "electron-src/resources/bin",
+        "to": "bin"
+      },
+      {
+        "from": "electron-src/resources/tray",
+        "to": "tray"
+      },
+      {
+        "from": "electron-src/resources/strategies",
+        "to": "resources/strategies"
+      },
+      {
+        "from": "electron-src/resources/backend",
+        "to": "backend"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "electron-src/resources/entitlements.mac.plist",
+      "entitlementsInherit": "electron-src/resources/entitlements.mac.plist",
+      "icon": "electron-src/resources/icon.png"
+    },
+    "linux": {
+      "category": "Utility",
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "maintainer": "luckrnx09",
+      "icon": "electron-src/resources/icons"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "electron-src/resources/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "asarUnpack": [
+      "**/node_modules/uiohook-napi/**"
+    ],
+    "publish": {
+      "provider": "github",
+      "owner": "luckrnx09",
+      "repo": "tyvox"
+    }
+  }
+}

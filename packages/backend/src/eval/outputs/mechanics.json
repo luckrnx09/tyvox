@@ -1,0 +1,97 @@
+{
+  "timestamp": "2026-08-10T08:24:22.191Z",
+  "polisherModel": "deepseek-v4-flash",
+  "judgeModel": "deepseek-v4-flash",
+  "cases": [
+    {
+      "name": "fixes grammar and word order",
+      "rule": "fixGrammar",
+      "status": "PASS",
+      "input": "her and me goes to the gym yesterday",
+      "output": "She and I went to the gym yesterday.",
+      "verdicts": [
+        {
+          "label": "expect: gym",
+          "verdict": "pass",
+          "reason": "The output contains the exact word 'gym'."
+        },
+        {
+          "label": "expect: yesterday",
+          "verdict": "pass",
+          "reason": "The output contains the exact word 'yesterday'."
+        },
+        {
+          "label": "forbid: her and me",
+          "verdict": "pass",
+          "reason": "The output does not contain the phrase 'her and me'."
+        },
+        {
+          "label": "forbid: goes",
+          "verdict": "pass",
+          "reason": "The output does not contain the word 'goes'."
+        },
+        {
+          "label": "fidelity: meaning preserved",
+          "verdict": "pass",
+          "reason": "The output conveys the same meaning as the input, with no added or lost information."
+        },
+        {
+          "label": "fidelity: no invented content",
+          "verdict": "pass",
+          "reason": "The output simply corrects grammar and word order without adding ideas or answering questions."
+        },
+        {
+          "label": "language: standard written form",
+          "verdict": "pass",
+          "reason": "The output uses standard written English with correct subject-verb agreement and pronoun case."
+        },
+        {
+          "label": "mechanics: punctuation and grammar",
+          "verdict": "pass",
+          "reason": "The output has correct punctuation, grammar, and spacing."
+        }
+      ],
+      "error": ""
+    },
+    {
+      "name": "adds punctuation to unpunctuated speech",
+      "rule": "fixPunctuation",
+      "status": "PASS",
+      "input": "are you coming to the standup tomorrow",
+      "output": "Are you coming to the standup tomorrow?",
+      "verdicts": [
+        {
+          "label": "expect: ?",
+          "verdict": "pass",
+          "reason": "The output ends with a question mark."
+        },
+        {
+          "label": "forbid: the output ends without a question mark",
+          "verdict": "pass",
+          "reason": "The output ends with a question mark, so it does not end without one."
+        },
+        {
+          "label": "fidelity: meaning preserved",
+          "verdict": "pass",
+          "reason": "The output preserves the meaning of the input, asking if the person is coming to the standup tomorrow."
+        },
+        {
+          "label": "fidelity: no invented content",
+          "verdict": "pass",
+          "reason": "The output only rewrites the input, adding no new ideas or explanations."
+        },
+        {
+          "label": "language: standard written form",
+          "verdict": "pass",
+          "reason": "The output is in standard written English."
+        },
+        {
+          "label": "mechanics: punctuation and grammar",
+          "verdict": "pass",
+          "reason": "The output uses correct punctuation, capitalization, and spacing."
+        }
+      ],
+      "error": ""
+    }
+  ]
+}

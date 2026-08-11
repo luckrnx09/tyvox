@@ -1,0 +1,262 @@
+{
+  "timestamp": "2026-08-10T08:24:22.191Z",
+  "polisherModel": "deepseek-v4-flash",
+  "judgeModel": "deepseek-v4-flash",
+  "cases": [
+    {
+      "name": "fixes misheard product name",
+      "rule": "replaceMisheardWords",
+      "status": "PASS",
+      "input": "ask chat gee pee tee to summarize this thread",
+      "output": "Ask ChatGPT to summarize this thread.",
+      "verdicts": [
+        {
+          "label": "expect: ChatGPT",
+          "verdict": "pass",
+          "reason": "The output contains 'ChatGPT' which correctly refers to the OpenAI chatbot."
+        },
+        {
+          "label": "forbid: gee pee tee",
+          "verdict": "pass",
+          "reason": "The output does not contain 'gee pee tee' or any similar phonetic spelling."
+        },
+        {
+          "label": "fidelity: meaning preserved",
+          "verdict": "pass",
+          "reason": "The output preserves the original request to ask ChatGPT to summarize the thread without adding or omitting information."
+        },
+        {
+          "label": "fidelity: no invented content",
+          "verdict": "pass",
+          "reason": "The output is a direct rewrite of the input, making no additional statements or explanations."
+        },
+        {
+          "label": "language: standard written form",
+          "verdict": "pass",
+          "reason": "The output uses proper capitalization and standard English spelling."
+        },
+        {
+          "label": "mechanics: punctuation and grammar",
+          "verdict": "pass",
+          "reason": "The output has correct capitalization, a period at the end, and proper spacing."
+        }
+      ],
+      "error": ""
+    },
+    {
+      "name": "corrects code x using context",
+      "rule": "replaceMisheardWords",
+      "status": "PASS",
+      "input": "have code x review the pull request",
+      "output": "Have Codex review the pull request.",
+      "verdicts": [
+        {
+          "label": "expect: Codex",
+          "verdict": "pass",
+          "reason": "The output uses 'Codex' which matches the intended context of the OpenAI AI coding agent."
+        },
+        {
+          "label": "forbid: code x",
+          "verdict": "pass",
+          "reason": "The output does not contain the phrase 'code x'."
+        },
+        {
+          "label": "forbid: code X",
+          "verdict": "pass",
+          "reason": "The output does not contain 'code X'."
+        },
+        {
+          "label": "fidelity: meaning preserved",
+          "verdict": "pass",
+          "reason": "The output conveys the same meaning as the input, with no additions or omissions."
+        },
+        {
+          "label": "fidelity: no invented content",
+          "verdict": "pass",
+          "reason": "The output only rewrites the input without adding ideas or explanations."
+        },
+        {
+          "label": "language: standard written form",
+          "verdict": "pass",
+          "reason": "The output is in standard written English."
+        },
+        {
+          "label": "mechanics: punctuation and grammar",
+          "verdict": "pass",
+          "reason": "The output uses correct punctuation, grammar, and spacing."
+        }
+      ],
+      "error": ""
+    },
+    {
+      "name": "fixes sound-alike terms in prose",
+      "rule": "replaceMisheardWords",
+      "status": "PASS",
+      "input": "our post gress database is getting slow, we should add an index on the orders table",
+      "output": "Our Postgres database is getting slow. We should add an index on the orders table.",
+      "verdicts": [
+        {
+          "label": "forbid: post gress",
+          "verdict": "pass",
+          "reason": "The output uses 'Postgres' instead of 'post gress'."
+        },
+        {
+          "label": "fidelity: meaning preserved",
+          "verdict": "pass",
+          "reason": "The output preserves the meaning of the input, with no additions or omissions."
+        },
+        {
+          "label": "fidelity: no invented content",
+          "verdict": "pass",
+          "reason": "The output only rewrites the input without adding ideas or explanations."
+        },
+        {
+          "label": "language: standard written form",
+          "verdict": "pass",
+          "reason": "The output is in standard written English."
+        },
+        {
+          "label": "mechanics: punctuation and grammar",
+          "verdict": "pass",
+          "reason": "The output uses correct punctuation, capitalization, and spacing."
+        }
+      ],
+      "error": ""
+    },
+    {
+      "name": "prefers standard notation",
+      "rule": "replaceMisheardWords",
+      "status": "PASS",
+      "input": "our support team is online twenty four seven",
+      "output": "Our support team is online 24/7.",
+      "verdicts": [
+        {
+          "label": "expect: 24/7",
+          "verdict": "pass",
+          "reason": "The output contains the exact text '24/7'."
+        },
+        {
+          "label": "forbid: twenty four seven",
+          "verdict": "pass",
+          "reason": "The output does not contain 'twenty four seven'."
+        },
+        {
+          "label": "fidelity: meaning preserved",
+          "verdict": "pass",
+          "reason": "The output conveys the same meaning as the input, with no additions or omissions."
+        },
+        {
+          "label": "fidelity: no invented content",
+          "verdict": "pass",
+          "reason": "The output only rewrites the input without adding ideas or explanations."
+        },
+        {
+          "label": "language: standard written form",
+          "verdict": "pass",
+          "reason": "The output uses standard written English, converting the spoken phrase to its conventional numeric form."
+        },
+        {
+          "label": "mechanics: punctuation and grammar",
+          "verdict": "pass",
+          "reason": "The output has correct capitalization, punctuation, and spacing."
+        }
+      ],
+      "error": ""
+    },
+    {
+      "name": "normalizes spoken contractions",
+      "rule": "replaceMisheardWords",
+      "status": "PASS",
+      "input": "i am gonna deploy and wanna test first",
+      "output": "I’m going to deploy, and I want to test first.",
+      "verdicts": [
+        {
+          "label": "expect: going to",
+          "verdict": "pass",
+          "reason": "The output contains 'going to'."
+        },
+        {
+          "label": "expect: want to",
+          "verdict": "pass",
+          "reason": "The output contains 'want to'."
+        },
+        {
+          "label": "forbid: gonna",
+          "verdict": "pass",
+          "reason": "The output does not contain 'gonna'."
+        },
+        {
+          "label": "forbid: wanna",
+          "verdict": "pass",
+          "reason": "The output does not contain 'wanna'."
+        },
+        {
+          "label": "fidelity: meaning preserved",
+          "verdict": "pass",
+          "reason": "The output preserves the meaning of the input, with no additions or omissions."
+        },
+        {
+          "label": "fidelity: no invented content",
+          "verdict": "pass",
+          "reason": "The output only rewrites the text without adding ideas or explanations."
+        },
+        {
+          "label": "language: standard written form",
+          "verdict": "pass",
+          "reason": "The output uses standard written English."
+        },
+        {
+          "label": "mechanics: punctuation and grammar",
+          "verdict": "pass",
+          "reason": "The output has correct punctuation, grammar, and spacing."
+        }
+      ],
+      "error": ""
+    },
+    {
+      "name": "does not overcorrect proper names",
+      "rule": "replaceMisheardWords",
+      "status": "PASS",
+      "input": "the kubernetes cluster runs on azure",
+      "output": "The Kubernetes cluster runs on Azure.",
+      "verdicts": [
+        {
+          "label": "expect: Kubernetes",
+          "verdict": "pass",
+          "reason": "The output correctly capitalizes 'Kubernetes' as a proper name."
+        },
+        {
+          "label": "expect: Azure",
+          "verdict": "pass",
+          "reason": "The output correctly capitalizes 'Azure' as a proper name."
+        },
+        {
+          "label": "forbid: Kubernetes or Azure replaced by a different word",
+          "verdict": "pass",
+          "reason": "Neither 'Kubernetes' nor 'Azure' is replaced by a different word."
+        },
+        {
+          "label": "fidelity: meaning preserved",
+          "verdict": "pass",
+          "reason": "The output preserves the original meaning without adding or omitting information."
+        },
+        {
+          "label": "fidelity: no invented content",
+          "verdict": "pass",
+          "reason": "The output only rewrites the text with capitalization and punctuation, adding no new ideas or explanations."
+        },
+        {
+          "label": "language: standard written form",
+          "verdict": "pass",
+          "reason": "The output is in standard written English with proper capitalization."
+        },
+        {
+          "label": "mechanics: punctuation and grammar",
+          "verdict": "pass",
+          "reason": "The output uses correct punctuation, grammar, and spacing."
+        }
+      ],
+      "error": ""
+    }
+  ]
+}

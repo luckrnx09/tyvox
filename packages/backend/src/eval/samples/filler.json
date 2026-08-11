@@ -1,0 +1,25 @@
+[
+  {
+    "name": "removes filler words",
+    "dimension": "filler",
+    "rule": "deleteFillerAndRepetition",
+    "input": "uh the cache is uh broken again",
+    "assert": {
+      "expect": ["cache", "broken"],
+      "forbid": ["uh"]
+    }
+  },
+  {
+    "name": "removes repeated words",
+    "dimension": "filler",
+    "rule": "deleteFillerAndRepetition",
+    "input": "we we should maybe maybe refactor this this module",
+    "assert": {
+      "forbid": [
+        "the word we repeated in a row",
+        "the word maybe repeated in a row",
+        "the word this repeated in a row"
+      ]
+    }
+  }
+]

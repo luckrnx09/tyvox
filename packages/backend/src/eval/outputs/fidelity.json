@@ -1,0 +1,117 @@
+{
+  "timestamp": "2026-08-10T08:24:22.191Z",
+  "polisherModel": "deepseek-v4-flash",
+  "judgeModel": "deepseek-v4-flash",
+  "cases": [
+    {
+      "name": "does not answer questions",
+      "rule": "noAnsweringOrAdding",
+      "status": "PASS",
+      "input": "why do planes leave white trails in the sky",
+      "output": "Why do planes leave white trails in the sky?",
+      "verdicts": [
+        {
+          "label": "forbid: an answer or explanation of the white trails",
+          "verdict": "pass",
+          "reason": "The output is a question, not an answer or explanation."
+        },
+        {
+          "label": "fidelity: meaning preserved",
+          "verdict": "pass",
+          "reason": "The output preserves the exact meaning and content of the input question."
+        },
+        {
+          "label": "fidelity: no invented content",
+          "verdict": "pass",
+          "reason": "The output is a direct rewrite of the question with no added ideas or explanations."
+        },
+        {
+          "label": "language: standard written form",
+          "verdict": "pass",
+          "reason": "The output uses standard English capitalization and punctuation."
+        },
+        {
+          "label": "mechanics: punctuation and grammar",
+          "verdict": "pass",
+          "reason": "The output has correct capitalization, a question mark, and proper spacing."
+        }
+      ],
+      "error": ""
+    },
+    {
+      "name": "does not add invented content",
+      "rule": "noAnsweringOrAdding",
+      "status": "PASS",
+      "input": "ping alex about the invoice",
+      "output": "Ping Alex about the invoice.",
+      "verdicts": [
+        {
+          "label": "forbid: details not mentioned in the input, such as dates, amounts, or deadlines",
+          "verdict": "pass",
+          "reason": "No extra details are added beyond the input."
+        },
+        {
+          "label": "fidelity: meaning preserved",
+          "verdict": "pass",
+          "reason": "The output preserves the meaning and action of the input exactly."
+        },
+        {
+          "label": "fidelity: no invented content",
+          "verdict": "pass",
+          "reason": "The output only rewrites the text without answering, adding ideas, or explaining."
+        },
+        {
+          "label": "language: standard written form",
+          "verdict": "pass",
+          "reason": "The output is standard written English."
+        },
+        {
+          "label": "mechanics: punctuation and grammar",
+          "verdict": "pass",
+          "reason": "The output has correct capitalization, punctuation, and spacing."
+        }
+      ],
+      "error": ""
+    },
+    {
+      "name": "keeps the spoken language",
+      "rule": "outputSpokenLanguage",
+      "status": "PASS",
+      "input": "el servidor se cayó otra vez anoche",
+      "output": "El servidor se cayó otra vez anoche.",
+      "verdicts": [
+        {
+          "label": "expect: servidor",
+          "verdict": "pass",
+          "reason": "The output contains the exact word 'servidor'."
+        },
+        {
+          "label": "forbid: the output is translated into another language",
+          "verdict": "pass",
+          "reason": "The output is in Spanish, matching the speaker's language."
+        },
+        {
+          "label": "fidelity: meaning preserved",
+          "verdict": "pass",
+          "reason": "The output preserves the meaning of the input: the server went down again last night."
+        },
+        {
+          "label": "fidelity: no invented content",
+          "verdict": "pass",
+          "reason": "The output only capitalizes and adds a period, adding no new content."
+        },
+        {
+          "label": "language: standard written form",
+          "verdict": "pass",
+          "reason": "The output uses standard Spanish capitalization and punctuation."
+        },
+        {
+          "label": "mechanics: punctuation and grammar",
+          "verdict": "pass",
+          "reason": "The output has correct capitalization, a period, and proper spacing."
+        }
+      ],
+      "error": ""
+    }
+  ]
+}

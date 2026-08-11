@@ -1,0 +1,57 @@
+{
+  "timestamp": "2026-08-10T08:24:22.191Z",
+  "polisherModel": "deepseek-v4-flash",
+  "judgeModel": "deepseek-v4-flash",
+  "cases": [
+    {
+      "name": "outputs translation only",
+      "rule": "noAnsweringOrAdding",
+      "status": "PASS",
+      "input": "请你建一个ticket，然后assend给我。我今天下午要处理一下这个问题。",
+      "output": "Please create a ticket and assign it to me. I need to work on this issue this afternoon.",
+      "verdicts": [
+        {
+          "label": "expect: ticket",
+          "verdict": "pass",
+          "reason": "The output contains the exact word 'ticket'."
+        },
+        {
+          "label": "expect: assign",
+          "verdict": "pass",
+          "reason": "The output contains the exact word 'assign'."
+        },
+        {
+          "label": "forbid: ---",
+          "verdict": "pass",
+          "reason": "The output does not contain '---'."
+        },
+        {
+          "label": "forbid: 请",
+          "verdict": "pass",
+          "reason": "The output does not contain '请'."
+        },
+        {
+          "label": "fidelity: meaning preserved",
+          "verdict": "pass",
+          "reason": "The output conveys the same meaning as the input without adding or omitting information."
+        },
+        {
+          "label": "fidelity: no invented content",
+          "verdict": "pass",
+          "reason": "The output only rewrites the text and does not answer questions, add ideas, or explain anything."
+        },
+        {
+          "label": "language: standard written form",
+          "verdict": "pass",
+          "reason": "The output is in standard written English, appropriate for the spoken language."
+        },
+        {
+          "label": "mechanics: punctuation and grammar",
+          "verdict": "pass",
+          "reason": "The output uses correct punctuation, grammar, and spacing."
+        }
+      ],
+      "error": ""
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+[
+  {
+    "name": "does not answer questions",
+    "dimension": "fidelity",
+    "rule": "noAnsweringOrAdding",
+    "input": "why do planes leave white trails in the sky",
+    "assert": {
+      "forbid": ["an answer or explanation of the white trails"],
+      "notes": "the polisher must only rephrase the question, never answer it"
+    }
+  },
+  {
+    "name": "does not add invented content",
+    "dimension": "fidelity",
+    "rule": "noAnsweringOrAdding",
+    "input": "ping alex about the invoice",
+    "assert": {
+      "forbid": ["details not mentioned in the input, such as dates, amounts, or deadlines"],
+      "notes": "any fact not present in the input is invented"
+    }
+  },
+  {
+    "name": "keeps the spoken language",
+    "dimension": "fidelity",
+    "rule": "outputSpokenLanguage",
+    "input": "el servidor se cayó otra vez anoche",
+    "assert": {
+      "expect": ["servidor"],
+      "forbid": ["the output is translated into another language"],
+      "notes": "the speaker spoke Spanish"
+    }
+  }
+]

@@ -1,0 +1,16 @@
+[
+  {
+    "name": "outputs translation only",
+    "dimension": "translate",
+    "rule": "noAnsweringOrAdding",
+    "input": "请你建一个ticket，然后assend给我。我今天下午要处理一下这个问题。",
+    "context": {
+      "translateTarget": "English"
+    },
+    "assert": {
+      "expect": ["ticket", "assign"],
+      "forbid": ["---", "请"],
+      "notes": "the output must be the English translation only, never the original text; assend is a mishearing of assign"
+    }
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "plugins": ["typescript", "import", "unicorn"],
+  "rules": {
+    "no-unused-vars": "error",
+    "no-const-assign": "error",
+    "no-duplicate-imports": "warn",
+    "no-unreachable": "error",
+    "typescript/no-import-type-side-effects": "error",
+    "typescript/prefer-ts-expect-error": "warn",
+    "import/no-cycle": "warn",
+    "unicorn/throw-new-error": "error"
+  },
+  "settings": {},
+  "ignorePatterns": ["out/**", "dist/**", "node_modules/**"]
+}

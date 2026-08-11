@@ -1,0 +1,54 @@
+[
+  {
+    "name": "resolves self-correction",
+    "dimension": "structure",
+    "rule": "keepSelfCorrection",
+    "input": "send it to mike, wait, sarah, sorry, dave",
+    "assert": {
+      "expect": ["Dave"],
+      "forbid": ["Mike", "Sarah"],
+      "notes": "only the final corrected name remains"
+    }
+  },
+  {
+    "name": "drops incomplete fragment without inventing",
+    "dimension": "structure",
+    "rule": "deleteIncompleteFragments",
+    "input": "the release went out yesterday and the metrics look good, so if we",
+    "assert": {
+      "expect": ["release", "metrics"],
+      "forbid": ["an invented completion of the trailing fragment", "so if we"],
+      "notes": "the trailing fragment so if we is incomplete and must be dropped entirely"
+    }
+  },
+  {
+    "name": "removes unrelated aside",
+    "dimension": "structure",
+    "rule": "deleteOffTopicAsides",
+    "input": "the client loved the demo, my cat knocked over my coffee this morning, so we ship friday",
+    "assert": {
+      "expect": ["demo", "Friday"],
+      "forbid": ["cat", "coffee"],
+      "notes": "the cat remark is unrelated to the topic"
+    }
+  },
+  {
+    "name": "groups topics into paragraphs",
+    "dimension": "structure",
+    "rule": "restructureText",
+    "input": "the signup form crashes on safari, i already filed a ticket, and the marketing site copy needs a rewrite before monday",
+    "assert": {
+      "expect": ["\n\n"],
+      "notes": "two topics: the safari crash and the marketing copy rewrite"
+    }
+  },
+  {
+    "name": "formats lists as numbered list",
+    "dimension": "structure",
+    "rule": "formatLists",
+    "input": "we need to book the flights, reserve the hotel, and rent a car",
+    "assert": {
+      "expect": ["1.", "2.", "3."]
+    }
+  }
+]
