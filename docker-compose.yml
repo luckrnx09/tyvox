@@ -1,0 +1,12 @@
+services:
+  backend:
+    build: .
+    environment:
+      - TYVOX_HOST=0.0.0.0
+    ports:
+      - "127.0.0.1:23456:23456"
+    volumes:
+      - tyvox-data:/root/.tyvox
+
+volumes:
+  tyvox-data:

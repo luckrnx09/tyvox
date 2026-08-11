@@ -1,0 +1,33 @@
+[
+  {
+    "name": "keeps commands verbatim",
+    "dimension": "structured",
+    "rule": "keepStructuredContent",
+    "input": "first git pull, then git checkout main and git merge develop",
+    "assert": {
+      "expect": ["git pull", "git checkout main", "git merge develop"],
+      "forbid": ["the commands are grammar-corrected or rewritten"]
+    }
+  },
+  {
+    "name": "keeps urls verbatim",
+    "dimension": "structured",
+    "rule": "keepStructuredContent",
+    "input": "search it on google dot com",
+    "assert": {
+      "expect": ["google.com"],
+      "forbid": ["the URL is spelled out or altered"],
+      "notes": "the spoken URL should be written in URL form with its exact path"
+    }
+  },
+  {
+    "name": "keeps code identifiers verbatim",
+    "dimension": "structured",
+    "rule": "keepStructuredContent",
+    "input": "run the command with the flag dash dash verbose",
+    "assert": {
+      "expect": ["--verbose"],
+      "forbid": ["--verbose rewritten to English words"]
+    }
+  }
+]

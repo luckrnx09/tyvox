@@ -1,0 +1,23 @@
+export const AUDIO = {
+  CHANNELS: 1,
+  MAX_RECORDING_DURATION_MS: 300_000,
+  RECORDING_TIMER_DANGER_MS: 270_000,
+  RECORDING_TIMER_WARNING_MS: 240_000,
+  SAMPLE_RATE: 16_000,
+} as const;
+
+export const CLIPBOARD = {
+  INJECT_RETRY_DELAY_MS: 100,
+  INJECT_RETRY_MAX: 3,
+} as const;
+
+export const CAPSULE = {
+  BOTTOM_OFFSET: 24,
+  HEIGHT: 48,
+  WIDTH: 300,
+} as const;
+
+export const SETTINGS = {
+  HEIGHT: 560,
+  WIDTH: 560,
+} as const;

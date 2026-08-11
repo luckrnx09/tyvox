@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    "out",
+    "dist",
+    "node_modules",
+    "coverage",
+    "release",
+    "spikes",
+    "packages/backend/src/eval/outputs"
+  ]
+}

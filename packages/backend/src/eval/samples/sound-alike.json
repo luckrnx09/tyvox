@@ -1,0 +1,68 @@
+[
+  {
+    "name": "fixes misheard product name",
+    "dimension": "sound-alike",
+    "rule": "replaceMisheardWords",
+    "input": "ask chat gee pee tee to summarize this thread",
+    "assert": {
+      "expect": ["ChatGPT"],
+      "forbid": ["gee pee tee"],
+      "notes": "the sentence is about the OpenAI chatbot"
+    }
+  },
+  {
+    "name": "corrects code x using context",
+    "dimension": "sound-alike",
+    "rule": "replaceMisheardWords",
+    "input": "have code x review the pull request",
+    "context": {
+      "vocabulary": "- Codex"
+    },
+    "assert": {
+      "expect": ["Codex"],
+      "forbid": ["code x", "code X"],
+      "notes": "Codex is the OpenAI AI coding agent, the recognizer misheard it as the phrase code x; the user's vocabulary lists Codex"
+    }
+  },
+  {
+    "name": "fixes sound-alike terms in prose",
+    "dimension": "sound-alike",
+    "rule": "replaceMisheardWords",
+    "input": "our post gress database is getting slow, we should add an index on the orders table",
+    "assert": {
+      "forbid": ["post gress"],
+      "notes": "post gress should be corrected to PostgreSQL or Postgres"
+    }
+  },
+  {
+    "name": "prefers standard notation",
+    "dimension": "sound-alike",
+    "rule": "replaceMisheardWords",
+    "input": "our support team is online twenty four seven",
+    "assert": {
+      "expect": ["24/7"],
+      "forbid": ["twenty four seven"]
+    }
+  },
+  {
+    "name": "normalizes spoken contractions",
+    "dimension": "sound-alike",
+    "rule": "replaceMisheardWords",
+    "input": "i am gonna deploy and wanna test first",
+    "assert": {
+      "expect": ["going to", "want to"],
+      "forbid": ["gonna", "wanna"]
+    }
+  },
+  {
+    "name": "does not overcorrect proper names",
+    "dimension": "sound-alike",
+    "rule": "replaceMisheardWords",
+    "input": "the kubernetes cluster runs on azure",
+    "assert": {
+      "expect": ["Kubernetes", "Azure"],
+      "forbid": ["Kubernetes or Azure replaced by a different word"],
+      "notes": "Kubernetes and Azure are correct proper names, only fix the capitalization"
+    }
+  }
+]

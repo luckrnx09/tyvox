@@ -1,0 +1,41 @@
+[
+  {
+    "name": "keeps profanity in professional tone",
+    "dimension": "tone",
+    "rule": "keepEmotion",
+    "input": "this fucking bug wasted my entire weekend",
+    "context": {
+      "tone": "professional"
+    },
+    "assert": {
+      "expect": ["fucking"],
+      "forbid": ["the profanity is removed or softened"]
+    }
+  },
+  {
+    "name": "keeps anger in casual tone",
+    "dimension": "tone",
+    "rule": "keepEmotion",
+    "input": "they cancelled my flight again, second time this month, unreal",
+    "context": {
+      "tone": "casual"
+    },
+    "assert": {
+      "expect": ["second time", "unreal"],
+      "forbid": ["the anger is removed or softened"]
+    }
+  },
+  {
+    "name": "concise tone compresses hard",
+    "dimension": "tone",
+    "rule": "deleteFillerAndRepetition",
+    "input": "hey could you maybe send over the slides whenever you get a sec, and heads up the standup moved to nine thirty",
+    "context": {
+      "tone": "concise"
+    },
+    "assert": {
+      "expect": ["slides", "9:30"],
+      "forbid": ["please"]
+    }
+  }
+]

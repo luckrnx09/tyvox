@@ -1,0 +1,37 @@
+[
+  {
+    "name": "normalizes traditional asr output to simplified",
+    "dimension": "language",
+    "rule": "fixMisidentifiedLanguage",
+    "input": "這個專案的程式碼品質不太好需要重構",
+    "context": {
+      "languages": "Chinese (Simplified), English"
+    },
+    "assert": {
+      "expect": ["重构"],
+      "forbid": ["重構", "程式碼"],
+      "notes": "the configured language is Simplified Chinese"
+    }
+  },
+  {
+    "name": "keeps language mix",
+    "dimension": "language",
+    "rule": "keepLanguageMix",
+    "input": "这个 feature 我做到一半，we need more time",
+    "assert": {
+      "expect": ["we need more time"],
+      "forbid": ["the English part is translated into Chinese"]
+    }
+  },
+  {
+    "name": "keeps foreign words in original script",
+    "dimension": "language",
+    "rule": "keepForeignWordScript",
+    "input": "后端用 go 写的，部署在 aws 上",
+    "assert": {
+      "expect": ["Go", "AWS"],
+      "forbid": ["Go or AWS translated into Chinese"],
+      "notes": "Go and AWS are English names inside a Chinese sentence, they stay English"
+    }
+  }
+]

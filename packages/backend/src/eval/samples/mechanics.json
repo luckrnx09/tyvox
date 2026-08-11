@@ -1,0 +1,22 @@
+[
+  {
+    "name": "fixes grammar and word order",
+    "dimension": "mechanics",
+    "rule": "fixGrammar",
+    "input": "her and me goes to the gym yesterday",
+    "assert": {
+      "expect": ["gym", "yesterday"],
+      "forbid": ["her and me", "goes"]
+    }
+  },
+  {
+    "name": "adds punctuation to unpunctuated speech",
+    "dimension": "mechanics",
+    "rule": "fixPunctuation",
+    "input": "are you coming to the standup tomorrow",
+    "assert": {
+      "expect": ["?"],
+      "forbid": ["the output ends without a question mark"]
+    }
+  }
+]

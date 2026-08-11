@@ -1,0 +1,25 @@
+node_modules/
+out/
+dist/
+release/
+coverage/
+.env
+*.log
+.DS_Store
+Thumbs.db
+.claude/
+.claude-*
+
+packages/desktop/test-results/
+packages/desktop/playwright-report/
+
+# mirrored from assets/logo/logo.svg by electron.vite.config.ts / vitest.config.ts
+packages/desktop/client-src/assets/logo.svg
+
+# built by packages/desktop/scripts/prepare-backend.mjs
+packages/desktop/electron-src/resources/backend/
+.omo/
+
+# pi harness session artifacts
+.pi-subagents/
+docs/superpowers/

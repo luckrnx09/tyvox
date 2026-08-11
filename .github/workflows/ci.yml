@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  gates:
+    name: Gates (lint, typecheck, unit, e2e)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/pnpm/store
+          key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: ${{ runner.os }}-pnpm-
+
+      - name: Install dependencies (audio libs, X server for Electron)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libasound2-dev libpulse-dev xvfb libnss3 libgtk-3-0 libxss1 libxtst6
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Format check
+        run: pnpm format:check
+
+      - name: Type check
+        run: pnpm typecheck
+
+      - name: Unit tests
+        run: pnpm test
+
+      - name: Build desktop
+        run: pnpm -C packages/desktop build
+
+      - name: E2E smoke tests
+        run: xvfb-run --auto-servernum pnpm -C packages/desktop test:e2e
+
+      - name: Upload E2E failure context
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-test-results
+          path: packages/desktop/test-results/
+          if-no-files-found: ignore
+          retention-days: 7

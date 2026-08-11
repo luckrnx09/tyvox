@@ -1,0 +1,97 @@
+{
+  "timestamp": "2026-08-10T08:24:22.191Z",
+  "polisherModel": "deepseek-v4-flash",
+  "judgeModel": "deepseek-v4-flash",
+  "cases": [
+    {
+      "name": "removes filler words",
+      "rule": "deleteFillerAndRepetition",
+      "status": "PASS",
+      "input": "uh the cache is uh broken again",
+      "output": "The cache is broken again.",
+      "verdicts": [
+        {
+          "label": "expect: cache",
+          "verdict": "pass",
+          "reason": "The output contains the exact word 'cache'."
+        },
+        {
+          "label": "expect: broken",
+          "verdict": "pass",
+          "reason": "The output contains the exact word 'broken'."
+        },
+        {
+          "label": "forbid: uh",
+          "verdict": "pass",
+          "reason": "The output does not contain 'uh'."
+        },
+        {
+          "label": "fidelity: meaning preserved",
+          "verdict": "pass",
+          "reason": "The output preserves the meaning of the input, with no additions or omissions."
+        },
+        {
+          "label": "fidelity: no invented content",
+          "verdict": "pass",
+          "reason": "The output only rewrites the input without adding ideas or explanations."
+        },
+        {
+          "label": "language: standard written form",
+          "verdict": "pass",
+          "reason": "The output is in standard written English."
+        },
+        {
+          "label": "mechanics: punctuation and grammar",
+          "verdict": "pass",
+          "reason": "The output has correct punctuation, grammar, and spacing."
+        }
+      ],
+      "error": ""
+    },
+    {
+      "name": "removes repeated words",
+      "rule": "deleteFillerAndRepetition",
+      "status": "PASS",
+      "input": "we we should maybe maybe refactor this this module",
+      "output": "We should refactor this module.",
+      "verdicts": [
+        {
+          "label": "forbid: the word we repeated in a row",
+          "verdict": "pass",
+          "reason": "The output has no repeated 'we'."
+        },
+        {
+          "label": "forbid: the word maybe repeated in a row",
+          "verdict": "pass",
+          "reason": "The output has no repeated 'maybe'."
+        },
+        {
+          "label": "forbid: the word this repeated in a row",
+          "verdict": "pass",
+          "reason": "The output has no repeated 'this'."
+        },
+        {
+          "label": "fidelity: meaning preserved",
+          "verdict": "pass",
+          "reason": "The output conveys the same meaning as the input, with no additions or omissions."
+        },
+        {
+          "label": "fidelity: no invented content",
+          "verdict": "pass",
+          "reason": "The output only rewrites the input without adding ideas or explanations."
+        },
+        {
+          "label": "language: standard written form",
+          "verdict": "pass",
+          "reason": "The output is in standard written English."
+        },
+        {
+          "label": "mechanics: punctuation and grammar",
+          "verdict": "pass",
+          "reason": "The output has correct punctuation, grammar, and spacing."
+        }
+      ],
+      "error": ""
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "name": "@tyvox/sdk",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./client/index.ts",
+    "./client": "./client/index.ts",
+    "./server": "./server/index.ts",
+    "./contracts": "./contracts/index.ts",
+    "./constants": "./constants/index.ts",
+    "./*": "./*"
+  },
+  "scripts": {
+    "generate:openapi": "tsx scripts/generate-openapi.ts",
+    "codegen": "orval --config ./orval.config.ts && tsx scripts/fix-codegen-types.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "^1.5.1",
+    "hono": "^4.12.31",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "js-yaml": "^5.2.2",
+    "orval": "8.22.0",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  }
+}
