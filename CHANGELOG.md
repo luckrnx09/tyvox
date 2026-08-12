@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.2] - 2026-08-12
+
+### Fixed
+
+- fix(desktop): macOS install polish (#8)
+- fix(scripts): robust macOS install (#7)
+- fix(scripts): macOS install fails on dmg volume name with spaces (#6)
+
 ## [0.0.1] - 2026-08-11
 
 ### Added
