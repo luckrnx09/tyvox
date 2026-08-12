@@ -1,4 +1,4 @@
-import { app, type BrowserWindow } from "electron";
+import { app, net, type BrowserWindow } from "electron";
 import electronUpdater, { type AppUpdater } from "electron-updater";
 import { IPC } from "../../shared/channels";
 import type { UpdateStatus } from "../../shared/types/ipc";
@@ -6,7 +6,8 @@ import { logger } from "../utils/logger";
 import { isMac } from "../utils/platform";
 import { installMacUpdate } from "./mac-install";
 
-const LATEST_RELEASE_API = "https://api.github.com/repos/luckrnx09/tyvox/releases/latest";
+const LATEST_RELEASE_URL = "https://github.com/luckrnx09/tyvox/releases/latest";
+const RELEASE_DOWNLOAD_BASE = "https://github.com/luckrnx09/tyvox/releases/download";
 
 const isNewerVersion = (latest: string, current: string): boolean => {
   const parse = (v: string) => v.replace(/^v/, "").split("-")[0]!.split(".").map(Number);
@@ -77,32 +78,19 @@ class UpdaterService {
   // bundle and relaunches (stable self-signed identity keeps TCC grants).
   async #checkMacManually(): Promise<void> {
     try {
-      const res = await fetch(LATEST_RELEASE_API, {
-        headers: { Accept: "application/vnd.github+json", "User-Agent": "tyvox-desktop" },
-      });
+      const res = await net.fetch(LATEST_RELEASE_URL, { redirect: "follow" });
       if (!res.ok) {
         throw new Error(`Release check failed: HTTP ${res.status}`);
       }
-      const data = (await res.json()) as {
-        tag_name?: string;
-        assets?: { name: string; browser_download_url: string }[];
-      };
-      const latest = data.tag_name ?? "";
+      const tag = res.url.split("/").pop() ?? "";
+      const latest = tag.replace(/^v/, "");
       if (!latest || !isNewerVersion(latest, app.getVersion())) {
         this.#emit({ state: "not-available" });
         return;
       }
-      const arch = process.arch === "arm64" ? "arm64" : "x64";
-      const dmg = (data.assets ?? []).find((asset) =>
-        arch === "arm64"
-          ? asset.name.endsWith("-arm64.dmg")
-          : asset.name.endsWith(".dmg") && !asset.name.includes("arm64"),
-      );
-      if (!dmg) {
-        throw new Error(`No dmg asset for ${arch} in ${latest}`);
-      }
-      this.#macDmgUrl = dmg.browser_download_url;
-      this.#emit({ state: "available", version: latest.replace(/^v/, "") });
+      const suffix = process.arch === "arm64" ? "-arm64" : "";
+      this.#macDmgUrl = `${RELEASE_DOWNLOAD_BASE}/${tag}/Tyvox-${latest}${suffix}.dmg`;
+      this.#emit({ state: "available", version: latest });
     } catch (err) {
       logger.warn("Manual update check failed", { error: String(err) });
       this.#emit({ state: "error", message: String(err) });
