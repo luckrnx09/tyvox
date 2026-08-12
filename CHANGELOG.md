@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.4] - 2026-08-12
+
+### Fixed
+
+- fix(desktop): allow-jit entitlement for hardened runtime (#13)
+
 ## [0.0.3] - 2026-08-12
 
 ### Added
