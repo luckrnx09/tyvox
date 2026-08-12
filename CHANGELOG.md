@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.3] - 2026-08-12
+
+### Added
+
+- feat(desktop): macOS install & update experience (#9)
+
 ## [0.0.2] - 2026-08-12
 
 ### Fixed
