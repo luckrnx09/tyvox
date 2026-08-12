@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.6] - 2026-08-12
+
+### Fixed
+
+- fix(desktop): update check via releases page + net.fetch (#14)
+
 ## [0.0.5] - 2026-08-12
 
 ### Changed
