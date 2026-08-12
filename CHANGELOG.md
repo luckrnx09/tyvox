@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.7] - 2026-08-12
+
+### Changed
+
+- chore: bump for in-app update dialog verification
+
 ## [0.0.6] - 2026-08-12
 
 ### Fixed
