@@ -4,6 +4,7 @@ import { IPC } from "../../shared/channels";
 import type { UpdateStatus } from "../../shared/types/ipc";
 import { logger } from "../utils/logger";
 import { isMac } from "../utils/platform";
+import { installMacUpdate } from "./mac-install";
 
 const LATEST_RELEASE_API = "https://api.github.com/repos/luckrnx09/tyvox/releases/latest";
 const RELEASES_PAGE_URL = "https://github.com/luckrnx09/tyvox/releases";
@@ -20,6 +21,7 @@ const isNewerVersion = (latest: string, current: string): boolean => {
 class UpdaterService {
   #autoUpdater: AppUpdater | null = null;
   #getSettingsWindow: (() => BrowserWindow | null) | null = null;
+  #macDmgUrl: string | null = null;
 
   init(getSettingsWindow: () => BrowserWindow | null): void {
     this.#getSettingsWindow = getSettingsWindow;
@@ -71,6 +73,11 @@ class UpdaterService {
     this.#autoUpdater?.quitAndInstall();
   }
 
+  installUpdate(): void {
+    if (!isMac() || !this.#macDmgUrl) return;
+    installMacUpdate(this.#macDmgUrl);
+  }
+
   // macOS auto-update requires a paid Apple signing identity; unsigned builds
   // can only notify and point the user at the release page.
   async #checkMacManually(): Promise<void> {
@@ -81,13 +88,26 @@ class UpdaterService {
       if (!res.ok) {
         throw new Error(`Release check failed: HTTP ${res.status}`);
       }
-      const data = (await res.json()) as { tag_name?: string };
+      const data = (await res.json()) as {
+        tag_name?: string;
+        assets?: { name: string; browser_download_url: string }[];
+      };
       const latest = data.tag_name ?? "";
-      if (latest && isNewerVersion(latest, app.getVersion())) {
-        this.#emit({ state: "available", version: latest.replace(/^v/, "") });
+      if (!latest || !isNewerVersion(latest, app.getVersion())) {
+        this.#emit({ state: "not-available" });
         return;
       }
-      this.#emit({ state: "not-available" });
+      const arch = process.arch === "arm64" ? "arm64" : "x64";
+      const dmg = (data.assets ?? []).find((asset) =>
+        arch === "arm64"
+          ? asset.name.endsWith("-arm64.dmg")
+          : asset.name.endsWith(".dmg") && !asset.name.includes("arm64"),
+      );
+      if (!dmg) {
+        throw new Error(`No dmg asset for ${arch} in ${latest}`);
+      }
+      this.#macDmgUrl = dmg.browser_download_url;
+      this.#emit({ state: "available", version: latest.replace(/^v/, "") });
     } catch (err) {
       logger.warn("Manual update check failed", { error: String(err) });
       this.#emit({ state: "error", message: String(err) });

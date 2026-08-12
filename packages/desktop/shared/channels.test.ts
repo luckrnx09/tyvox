@@ -68,7 +68,7 @@ describe("IPC channels", () => {
     expect(IPC.START_BACKEND).toBe("backend:start");
   });
 
-  it("total channel count is 35", () => {
-    expect(Object.keys(IPC).length).toBe(35);
+  it("total channel count is 36", () => {
+    expect(Object.keys(IPC).length).toBe(36);
   });
 });

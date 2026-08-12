@@ -7,11 +7,11 @@ export const en = {
     hint: "Your voice types for you.",
     license: "License",
     newVersion: "v{{version}} available",
-    openRelease: "Download",
     quitAndInstall: "Restart & Update",
     reportIssue: "Report Issue",
     upToDate: "You're up to date",
     updateError: "Update check failed",
+    updateNow: "Update now",
     version: "Version",
   },
   actions: {

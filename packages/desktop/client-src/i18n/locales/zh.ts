@@ -7,11 +7,11 @@ export const zh = {
     hint: "你的声音，替你打字。",
     license: "协议",
     newVersion: "发现新版本 v{{version}}",
-    openRelease: "前往下载",
     quitAndInstall: "重启并更新",
     reportIssue: "报告问题",
     upToDate: "已是最新版本",
     updateError: "检查更新失败",
+    updateNow: "立即更新",
     version: "版本",
   },
   actions: {

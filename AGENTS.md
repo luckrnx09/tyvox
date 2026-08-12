@@ -59,7 +59,7 @@ packages/
 - **desktop** — Main process (hotkey, IPC, tray, windows, updater, embedded backend), renderer (React, MUI, framer-motion), shared types/channels/limits. Key decisions:
   - The capsule window is `focusable: false` so the user's target field keeps focus for paste injection; consequently global key handling (hotkeys, Escape-to-cancel) lives in the main process, not the renderer.
   - Packaged builds embed the backend and spawn it as a plain Node child, passing `TYVOX_PORT`/`TYVOX_HOST` into its environment; if something already serves that port (dev backend, future standalone deployment) it is reused as-is.
-  - Auto-update uses electron-updater against GitHub Releases on Win/Linux; unsigned macOS cannot auto-update (platform requires signing) and only flags new versions with a link to the release page.
+  - Auto-update uses electron-updater against GitHub Releases on Win/Linux; macOS builds are signed with a stable self-signed certificate and update in-app via a detached script (`electron-src/resources/scripts/update-mac.sh`) that swaps the app bundle and relaunches.
   - Tray icon is a single static logo; it does not reflect capsule state. Logo SVGs live in `assets/logo/` — they are the source of truth, PNGs are exports.
 - **sdk** — Source of truth for API data shapes (config, ASR models, vocabulary, transcribe) plus the generated client produced by `pnpm codegen` (orval + post-process for PascalCase type names). `sdk/server` also hosts the route definitions and `Services` DI types so OpenAPI codegen can run without the backend; the backend composes the real implementations.
 

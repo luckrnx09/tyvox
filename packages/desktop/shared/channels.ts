@@ -29,6 +29,7 @@ export const IPC = {
   SHOW_CAPSULE: "window:show-capsule",
   SETTINGS_HOTKEY_RECORDING: "settings:hotkey-recording",
   UPDATE_CHECK: "update:check",
+  UPDATE_INSTALL: "update:install",
   UPDATE_OPEN_RELEASES: "update:open-releases",
   UPDATE_QUIT_INSTALL: "update:quit-install",
   UPDATE_STATUS: "update:status",

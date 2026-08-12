@@ -129,14 +129,14 @@ export const AboutTab = () => {
             <Button
               size="small"
               variant="text"
-              onClick={() => window.electron.invoke(IPC.UPDATE_OPEN_RELEASES).catch(() => {})}
+              onClick={() => window.electron.invoke(IPC.UPDATE_INSTALL).catch(() => {})}
               sx={{
                 textTransform: "none",
                 color: "text.secondary",
                 "&:hover": { color: "text.primary" },
               }}
             >
-              {t("about.openRelease")}
+              {t("about.updateNow")}
             </Button>
           )}
           {status?.state === "downloaded" && (
