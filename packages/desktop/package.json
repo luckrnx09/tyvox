@@ -76,6 +76,10 @@
       {
         "from": "electron-src/resources/backend",
         "to": "backend"
+      },
+      {
+        "from": "electron-src/resources/scripts",
+        "to": "scripts"
       }
     ],
     "mac": {

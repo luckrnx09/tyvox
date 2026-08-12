@@ -23,13 +23,17 @@ function resetAccessibilityTcc(): Promise<void> {
   });
 }
 
-export async function ensureFreshAccessibilityGrant(): Promise<boolean> {
+export function checkAccessibilityGranted(): boolean {
+  if (!isMac()) return true;
+  return systemPreferences.isTrustedAccessibilityClient(false);
+}
+
+export async function requestAccessibilityGrant(): Promise<boolean> {
   if (!isMac()) return true;
   if (systemPreferences.isTrustedAccessibilityClient(false)) return true;
   if (!staleGrantResetAttempted) {
     staleGrantResetAttempted = true;
     await resetAccessibilityTcc();
-    systemPreferences.isTrustedAccessibilityClient(true);
   }
-  return systemPreferences.isTrustedAccessibilityClient(false);
+  return systemPreferences.isTrustedAccessibilityClient(true);
 }

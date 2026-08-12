@@ -7,11 +7,11 @@ export const zh = {
     hint: "你的声音，替你打字。",
     license: "协议",
     newVersion: "发现新版本 v{{version}}",
-    openRelease: "前往下载",
     quitAndInstall: "重启并更新",
     reportIssue: "报告问题",
     upToDate: "已是最新版本",
     updateError: "检查更新失败",
+    updateNow: "立即更新",
     version: "版本",
   },
   actions: {
@@ -163,6 +163,12 @@ export const zh = {
     failed: "验证失败",
     ok: "验证通过",
     testing: "正在验证…",
+  },
+  update: {
+    availableTitle: "发现新版本",
+    availableBody: "Tyvox {{version}} 已发布，现在更新吗？",
+    later: "下次再说",
+    now: "更新",
   },
   vocabulary: {
     add: "添加",

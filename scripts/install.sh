@@ -48,12 +48,19 @@ install_macos() {
 
   hdiutil attach "${tmpdir}/Tyvox.dmg" -nobrowse -readonly -mountpoint "$mount_dir" -quiet
 
-  cp -R "${mount_dir}/Tyvox.app" /Applications/
+  if ! rm -rf "/Applications/${APP_NAME}.app" 2>/dev/null; then
+    echo "Permission denied; retrying with sudo..."
+    sudo rm -rf "/Applications/${APP_NAME}.app"
+  fi
+  if ! cp -R "${mount_dir}/Tyvox.app" /Applications/ 2>/dev/null; then
+    sudo cp -R "${mount_dir}/Tyvox.app" /Applications/
+  fi
   hdiutil detach "$mount_dir" -quiet >/dev/null 2>&1 || true
 
-  echo "Removing Gatekeeper quarantine and self-signing ${APP_NAME}..."
-  sudo xattr -rd com.apple.quarantine "/Applications/${APP_NAME}.app"
-  sudo codesign --force --deep --sign - "/Applications/${APP_NAME}.app"
+  echo "Removing Gatekeeper quarantine on ${APP_NAME}..."
+  if ! xattr -rd com.apple.quarantine "/Applications/${APP_NAME}.app" 2>/dev/null; then
+    sudo xattr -rd com.apple.quarantine "/Applications/${APP_NAME}.app"
+  fi
 
   echo "${APP_NAME} installed to /Applications."
 }

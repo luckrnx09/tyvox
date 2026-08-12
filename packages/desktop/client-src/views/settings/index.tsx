@@ -1,7 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MicOutlinedIcon from "@mui/icons-material/MicOutlined";
 import AutoFixHighOutlinedIcon from "@mui/icons-material/AutoFixHighOutlined";
@@ -9,6 +13,10 @@ import KeyboardOutlinedIcon from "@mui/icons-material/KeyboardOutlined";
 import BookOutlinedIcon from "@mui/icons-material/BookOutlined";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import { useSettings } from "../../hooks/useSettings";
+import { useIpcListener } from "../../hooks/useIpcListener";
+import { isUpdateSnoozed, snoozeUpdates } from "../../utils/update-snooze";
+import { IPC } from "../../../shared/channels";
+import type { PlatformResult, UpdateStatus } from "../../../shared/types/ipc";
 import { GeneralTab } from "./tabs/GeneralTab";
 import { SpeechTab } from "./tabs/SpeechTab";
 import { LanguageModelTab } from "./tabs/LanguageModelTab";
@@ -27,14 +35,53 @@ const NAV: { id: Page; icon: React.ElementType; labelKey: string }[] = [
   { id: "about", icon: InfoOutlinedIcon, labelKey: "settings.nav.about" },
 ];
 
+let autoUpdateCheckDone = false;
+
 export const Settings = () => {
   const { t } = useTranslation();
   const { load, isLoaded } = useSettings();
   const [page, setPage] = useState<Page>("general");
+  const [updateVersion, setUpdateVersion] = useState<string | null>(null);
+  const platformRef = useRef<PlatformResult["platform"] | null>(null);
+  const autoCheckPendingRef = useRef(false);
 
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    window.electron
+      .invoke<PlatformResult>(IPC.GET_PLATFORM)
+      .then((r) => {
+        platformRef.current = r.platform;
+      })
+      .catch(() => {});
+    if (autoUpdateCheckDone || isUpdateSnoozed()) return;
+    autoUpdateCheckDone = true;
+    autoCheckPendingRef.current = true;
+    window.electron.invoke(IPC.UPDATE_CHECK).catch(() => {});
+  }, []);
+
+  useIpcListener(IPC.UPDATE_STATUS, (payload: unknown) => {
+    const status = payload as UpdateStatus;
+    if (!autoCheckPendingRef.current) return;
+    if (status.state === "checking") return;
+    autoCheckPendingRef.current = false;
+    if (status.state === "available" && platformRef.current === "darwin") {
+      setUpdateVersion(status.version);
+    }
+  });
+
+  const dismissUpdate = () => {
+    snoozeUpdates();
+    setUpdateVersion(null);
+  };
+
+  const applyUpdate = () => {
+    setUpdateVersion(null);
+    const channel = platformRef.current === "darwin" ? IPC.UPDATE_INSTALL : IPC.UPDATE_QUIT_INSTALL;
+    window.electron.invoke(channel).catch(() => {});
+  };
 
   const navigate = (next: Page) => {
     setPage(next);
@@ -69,6 +116,17 @@ export const Settings = () => {
         width: "100%",
       }}
     >
+      <Box
+        sx={{
+          height: 40,
+          left: 0,
+          position: "absolute",
+          right: 0,
+          top: 0,
+          WebkitAppRegion: "drag",
+          zIndex: 1,
+        }}
+      />
       <Box
         component="nav"
         sx={{
@@ -134,6 +192,17 @@ export const Settings = () => {
         {page === "vocabulary" && <VocabularyTab />}
         {page === "about" && <AboutTab />}
       </Box>
+
+      <Dialog open={updateVersion !== null} onClose={dismissUpdate}>
+        <DialogTitle>{t("update.availableTitle")}</DialogTitle>
+        <DialogContent>{t("update.availableBody", { version: updateVersion })}</DialogContent>
+        <DialogActions>
+          <Button onClick={dismissUpdate}>{t("update.later")}</Button>
+          <Button onClick={applyUpdate} variant="contained">
+            {t("update.now")}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
