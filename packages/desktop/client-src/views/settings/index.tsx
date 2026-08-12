@@ -43,6 +43,7 @@ export const Settings = () => {
   const [page, setPage] = useState<Page>("general");
   const [updateVersion, setUpdateVersion] = useState<string | null>(null);
   const platformRef = useRef<PlatformResult["platform"] | null>(null);
+  const autoCheckPendingRef = useRef(false);
 
   useEffect(() => {
     load();
@@ -57,11 +58,15 @@ export const Settings = () => {
       .catch(() => {});
     if (autoUpdateCheckDone || isUpdateSnoozed()) return;
     autoUpdateCheckDone = true;
+    autoCheckPendingRef.current = true;
     window.electron.invoke(IPC.UPDATE_CHECK).catch(() => {});
   }, []);
 
   useIpcListener(IPC.UPDATE_STATUS, (payload: unknown) => {
     const status = payload as UpdateStatus;
+    if (!autoCheckPendingRef.current) return;
+    if (status.state === "checking") return;
+    autoCheckPendingRef.current = false;
     if (status.state === "available") {
       setUpdateVersion(status.version);
     }
