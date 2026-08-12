@@ -108,6 +108,7 @@ jobs:
           security create-keychain -p ci-build "$RUNNER_TEMP/ci.keychain-db"
           security default-keychain -s "$RUNNER_TEMP/ci.keychain-db"
           security unlock-keychain -p ci-build "$RUNNER_TEMP/ci.keychain-db"
+          security list-keychains -d user -s "$RUNNER_TEMP/ci.keychain-db" login.keychain
           security set-keychain-settings -t 3600 "$RUNNER_TEMP/ci.keychain-db"
           security import "$RUNNER_TEMP/tyvox.p12" -k "$RUNNER_TEMP/ci.keychain-db" \
             -P "$MAC_CERT_PASSWORD" -T /usr/bin/codesign

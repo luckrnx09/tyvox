@@ -67,7 +67,7 @@ export const Settings = () => {
     if (!autoCheckPendingRef.current) return;
     if (status.state === "checking") return;
     autoCheckPendingRef.current = false;
-    if (status.state === "available") {
+    if (status.state === "available" && platformRef.current === "darwin") {
       setUpdateVersion(status.version);
     }
   });
