@@ -164,6 +164,12 @@ export const zh = {
     ok: "验证通过",
     testing: "正在验证…",
   },
+  update: {
+    availableTitle: "发现新版本",
+    availableBody: "Tyvox {{version}} 已发布，现在更新吗？",
+    later: "下次再说",
+    now: "更新",
+  },
   vocabulary: {
     add: "添加",
     addEntry: "添加词条",

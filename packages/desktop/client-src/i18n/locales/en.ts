@@ -165,6 +165,12 @@ export const en = {
     ok: "Configuration verified",
     testing: "Verifying…",
   },
+  update: {
+    availableTitle: "Update available",
+    availableBody: "Tyvox {{version}} is available. Update now?",
+    later: "Later",
+    now: "Update",
+  },
   vocabulary: {
     add: "Add",
     addEntry: "Add Entry",
