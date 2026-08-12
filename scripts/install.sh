@@ -54,7 +54,6 @@ install_macos() {
   echo "Removing Gatekeeper quarantine and self-signing ${APP_NAME}..."
   sudo xattr -rd com.apple.quarantine "/Applications/${APP_NAME}.app"
   sudo codesign --force --deep --sign - "/Applications/${APP_NAME}.app"
-  sudo spctl --add "/Applications/${APP_NAME}.app"
 
   echo "${APP_NAME} installed to /Applications."
 }
