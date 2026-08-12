@@ -1,4 +1,4 @@
-import { app } from "electron";
+import { app, systemPreferences } from "electron";
 import { exec } from "child_process";
 import { registerHandler } from "./router";
 import { updaterService } from "../../updater";
@@ -23,6 +23,7 @@ export function registerSystemHandlers(): void {
   });
   registerHandler(IPC.OPEN_ACCESSIBILITY_PREFS, () => {
     if (isMac()) {
+      systemPreferences.isTrustedAccessibilityClient(true);
       exec('open "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility"');
     }
   });
