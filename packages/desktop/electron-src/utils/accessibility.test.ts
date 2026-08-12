@@ -42,70 +42,68 @@ const execFailImpl = ((_cmd: string, _opts: unknown, cb: ExecCallback) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }) as any;
 
-describe("ensureFreshAccessibilityGrant", () => {
+describe("checkAccessibilityGranted", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.resetModules();
+    mocks.isMac.mockReturnValue(true);
+  });
+
+  it("returns true on non-mac without touching systemPreferences", async () => {
+    mocks.isMac.mockReturnValue(false);
+    const { checkAccessibilityGranted } = await import("./accessibility");
+    expect(checkAccessibilityGranted()).toBe(true);
+    expect(mocks.isTrustedAccessibilityClient).not.toHaveBeenCalled();
+  });
+
+  it("queries without prompting and never runs tccutil", async () => {
+    mocks.isTrustedAccessibilityClient.mockReturnValue(false);
+    const { checkAccessibilityGranted } = await import("./accessibility");
+    expect(checkAccessibilityGranted()).toBe(false);
+    expect(mocks.isTrustedAccessibilityClient).toHaveBeenCalledWith(false);
+    expect(mocks.isTrustedAccessibilityClient).toHaveBeenCalledTimes(1);
+    expect(mocks.exec).not.toHaveBeenCalled();
+  });
+});
+
+describe("requestAccessibilityGrant", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.resetModules();
     mocks.isMac.mockReturnValue(true);
     mocks.exec.mockImplementation(execOkImpl);
+  });
+
+  it("returns true immediately when already granted", async () => {
     mocks.isTrustedAccessibilityClient.mockReturnValue(true);
-  });
-
-  it("returns true without touching TCC when already trusted", async () => {
-    const { ensureFreshAccessibilityGrant } = await import("./accessibility");
-    const granted = await ensureFreshAccessibilityGrant();
-    expect(granted).toBe(true);
+    const { requestAccessibilityGrant } = await import("./accessibility");
+    expect(await requestAccessibilityGrant()).toBe(true);
+    expect(mocks.isTrustedAccessibilityClient).not.toHaveBeenCalledWith(true);
     expect(mocks.exec).not.toHaveBeenCalled();
   });
 
-  it("returns true immediately on non-mac platforms", async () => {
-    mocks.isMac.mockReturnValue(false);
-    const { ensureFreshAccessibilityGrant } = await import("./accessibility");
-    const granted = await ensureFreshAccessibilityGrant();
-    expect(granted).toBe(true);
-    expect(mocks.isTrustedAccessibilityClient).not.toHaveBeenCalled();
-    expect(mocks.exec).not.toHaveBeenCalled();
-  });
-
-  it("resets the stale TCC entry for the app bundle id when untrusted", async () => {
+  it("resets tcc once then prompts when not granted", async () => {
     mocks.isTrustedAccessibilityClient.mockReturnValue(false);
-    const { ensureFreshAccessibilityGrant } = await import("./accessibility");
-    await ensureFreshAccessibilityGrant();
-    expect(mocks.exec).toHaveBeenCalledWith(
-      "tccutil reset Accessibility com.tyvox.dictation",
-      expect.objectContaining({ timeout: expect.any(Number) }),
-      expect.any(Function),
-    );
-  });
-
-  it("re-prompts via the system dialog after resetting", async () => {
-    mocks.isTrustedAccessibilityClient.mockReturnValue(false);
-    const { ensureFreshAccessibilityGrant } = await import("./accessibility");
-    await ensureFreshAccessibilityGrant();
+    const { requestAccessibilityGrant } = await import("./accessibility");
+    await requestAccessibilityGrant();
+    expect(mocks.exec).toHaveBeenCalledTimes(1);
     expect(mocks.isTrustedAccessibilityClient).toHaveBeenCalledWith(true);
   });
 
-  it("resets at most once per launch while still untrusted", async () => {
+  it("resets tcc only once across calls", async () => {
     mocks.isTrustedAccessibilityClient.mockReturnValue(false);
-    const { ensureFreshAccessibilityGrant } = await import("./accessibility");
-    await ensureFreshAccessibilityGrant();
-    await ensureFreshAccessibilityGrant();
-    expect(mocks.exec.mock.calls.length).toBe(1);
+    const { requestAccessibilityGrant } = await import("./accessibility");
+    await requestAccessibilityGrant();
+    await requestAccessibilityGrant();
+    expect(mocks.exec).toHaveBeenCalledTimes(1);
   });
 
-  it("resolves and warns when tccutil fails", async () => {
+  it("still prompts when tccutil reset fails", async () => {
+    mocks.isTrustedAccessibilityClient.mockReturnValue(false);
     mocks.exec.mockImplementation(execFailImpl);
-    mocks.isTrustedAccessibilityClient.mockReturnValue(false);
-    const { ensureFreshAccessibilityGrant } = await import("./accessibility");
-    const granted = await ensureFreshAccessibilityGrant();
-    expect(granted).toBe(false);
+    const { requestAccessibilityGrant } = await import("./accessibility");
+    await requestAccessibilityGrant();
     expect(mocks.warn).toHaveBeenCalled();
-  });
-
-  it("reports granted when the re-check after reset passes", async () => {
-    mocks.isTrustedAccessibilityClient.mockReturnValueOnce(false).mockReturnValue(true);
-    const { ensureFreshAccessibilityGrant } = await import("./accessibility");
-    const granted = await ensureFreshAccessibilityGrant();
-    expect(granted).toBe(true);
+    expect(mocks.isTrustedAccessibilityClient).toHaveBeenCalledWith(true);
   });
 });
