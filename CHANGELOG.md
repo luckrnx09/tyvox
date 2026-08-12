@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.8] - 2026-08-12
+
+### Fixed
+
+- fix(desktop): update check silently always up-to-date (#15)
+
 ## [0.0.7] - 2026-08-12
 
 ### Changed
