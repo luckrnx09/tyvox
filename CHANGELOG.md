@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.5] - 2026-08-12
+
+### Changed
+
+- chore: bump for update-chain verification release
+
 ## [0.0.4] - 2026-08-12
 
 ### Fixed
