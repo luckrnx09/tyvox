@@ -70,6 +70,17 @@ export const Settings = () => {
       }}
     >
       <Box
+        sx={{
+          height: 40,
+          left: 0,
+          position: "absolute",
+          right: 0,
+          top: 0,
+          WebkitAppRegion: "drag",
+          zIndex: 1,
+        }}
+      />
+      <Box
         component="nav"
         sx={{
           backgroundColor: "background.paper",
