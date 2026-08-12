@@ -1,4 +1,4 @@
-import { app, shell, type BrowserWindow } from "electron";
+import { app, type BrowserWindow } from "electron";
 import electronUpdater, { type AppUpdater } from "electron-updater";
 import { IPC } from "../../shared/channels";
 import type { UpdateStatus } from "../../shared/types/ipc";
@@ -7,7 +7,6 @@ import { isMac } from "../utils/platform";
 import { installMacUpdate } from "./mac-install";
 
 const LATEST_RELEASE_API = "https://api.github.com/repos/luckrnx09/tyvox/releases/latest";
-const RELEASES_PAGE_URL = "https://github.com/luckrnx09/tyvox/releases";
 
 const isNewerVersion = (latest: string, current: string): boolean => {
   const parse = (v: string) => v.replace(/^v/, "").split("-")[0]!.split(".").map(Number);
@@ -65,10 +64,6 @@ class UpdaterService {
     await this.#checkMacManually();
   }
 
-  openReleasesPage(): void {
-    void shell.openExternal(RELEASES_PAGE_URL);
-  }
-
   quitAndInstall(): void {
     this.#autoUpdater?.quitAndInstall();
   }
@@ -78,8 +73,8 @@ class UpdaterService {
     installMacUpdate(this.#macDmgUrl);
   }
 
-  // macOS auto-update requires a paid Apple signing identity; unsigned builds
-  // can only notify and point the user at the release page.
+  // macOS builds skip electron-updater: a detached script swaps the app
+  // bundle and relaunches (stable self-signed identity keeps TCC grants).
   async #checkMacManually(): Promise<void> {
     try {
       const res = await fetch(LATEST_RELEASE_API, {

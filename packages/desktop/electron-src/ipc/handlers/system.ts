@@ -9,7 +9,6 @@ import { IPC } from "../../../shared/channels";
 export function registerSystemHandlers(): void {
   registerHandler(IPC.UPDATE_CHECK, () => updaterService.check());
   registerHandler(IPC.UPDATE_INSTALL, () => updaterService.installUpdate());
-  registerHandler(IPC.UPDATE_OPEN_RELEASES, () => updaterService.openReleasesPage());
   registerHandler(IPC.UPDATE_QUIT_INSTALL, () => updaterService.quitAndInstall());
   registerHandler(IPC.GET_PLATFORM, () => ({
     arch: process.arch,

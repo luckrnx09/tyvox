@@ -30,7 +30,6 @@ export const IPC = {
   SETTINGS_HOTKEY_RECORDING: "settings:hotkey-recording",
   UPDATE_CHECK: "update:check",
   UPDATE_INSTALL: "update:install",
-  UPDATE_OPEN_RELEASES: "update:open-releases",
   UPDATE_QUIT_INSTALL: "update:quit-install",
   UPDATE_STATUS: "update:status",
   WINDOW_MAXIMIZE: "window:maximize",
