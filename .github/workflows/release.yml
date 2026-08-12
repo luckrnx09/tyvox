@@ -112,7 +112,7 @@ jobs:
           security set-keychain-settings -t 3600 "$RUNNER_TEMP/ci.keychain-db"
           security import "$RUNNER_TEMP/tyvox.p12" -k "$RUNNER_TEMP/ci.keychain-db" \
             -P "$MAC_CERT_PASSWORD" -T /usr/bin/codesign
-          openssl pkcs12 -in "$RUNNER_TEMP/tyvox.p12" -clcerts -nokeys \
+          openssl pkcs12 -legacy -in "$RUNNER_TEMP/tyvox.p12" -clcerts -nokeys \
             -passin "pass:$MAC_CERT_PASSWORD" -out "$RUNNER_TEMP/tyvox.crt"
           security add-trusted-cert -d -r trustRoot -k "$RUNNER_TEMP/ci.keychain-db" "$RUNNER_TEMP/tyvox.crt"
           security set-key-partition-list -S apple-tool:,apple:,codesign: \
