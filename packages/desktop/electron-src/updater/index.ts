@@ -18,6 +18,21 @@ const isNewerVersion = (latest: string, current: string): boolean => {
   return false;
 };
 
+function resolveLatestTag(): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const request = net.request({ method: "HEAD", url: LATEST_RELEASE_URL });
+    request.on("redirect", (_statusCode, _method, redirectUrl) => {
+      request.abort();
+      resolve(redirectUrl.split("/").pop() ?? "");
+    });
+    request.on("response", (response) => {
+      reject(new Error(`Release check failed: HTTP ${response.statusCode}`));
+    });
+    request.on("error", reject);
+    request.end();
+  });
+}
+
 class UpdaterService {
   #autoUpdater: AppUpdater | null = null;
   #getSettingsWindow: (() => BrowserWindow | null) | null = null;
@@ -78,11 +93,7 @@ class UpdaterService {
   // bundle and relaunches (stable self-signed identity keeps TCC grants).
   async #checkMacManually(): Promise<void> {
     try {
-      const res = await net.fetch(LATEST_RELEASE_URL, { redirect: "follow" });
-      if (!res.ok) {
-        throw new Error(`Release check failed: HTTP ${res.status}`);
-      }
-      const tag = res.url.split("/").pop() ?? "";
+      const tag = await resolveLatestTag();
       const latest = tag.replace(/^v/, "");
       if (!latest || !isNewerVersion(latest, app.getVersion())) {
         this.#emit({ state: "not-available" });
