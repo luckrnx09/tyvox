@@ -15,8 +15,5 @@ ffmpeg -y -framerate 15 -i "$FRAMES_DIR/frame-%05d.png" \
 ffmpeg -y -framerate 15 -i "$FRAMES_DIR/frame-%05d.png" -i "$FRAMES_DIR/palette.png" \
   -lavfi "fps=15 [x]; [x][1:v] paletteuse=dither=bayer:bayer_scale=4" \
   "$REPO_ROOT/assets/demo/polish-demo.gif"
-ffmpeg -y -framerate 15 -i "$FRAMES_DIR/frame-%05d.png" \
-  -c:v libx264 -pix_fmt yuv420p -crf 23 -preset slow -movflags +faststart -an \
-  "$REPO_ROOT/assets/demo/polish-demo.mp4"
 
-ls -lh "$REPO_ROOT/assets/demo/polish-demo.gif" "$REPO_ROOT/assets/demo/polish-demo.mp4"
+ls -lh "$REPO_ROOT/assets/demo/polish-demo.gif"
