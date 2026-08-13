@@ -18,6 +18,15 @@ export function ensureUiohookStarted(): void {
   logger.info("uIOhook started");
 }
 
+export function stopUiohook(): void {
+  if (!uiohookStarted) {
+    return;
+  }
+  uIOhook.stop();
+  uiohookStarted = false;
+  logger.info("uIOhook stopped");
+}
+
 interface HotkeyHandlers {
   /** Fired when the hotkey is pressed (keydown). */
   onKeyDown: HotkeyCallback;

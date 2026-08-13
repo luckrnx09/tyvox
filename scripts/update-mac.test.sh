@@ -18,10 +18,7 @@ EOF
 cat > "$STUB_BIN/curl" <<'EOF'
 #!/usr/bin/env bash
 echo "curl $*" >> "$CALL_LOG"
-out=""
-prev=""
-for a in "$@"; do [ "$prev" = "-o" ] && out="$a"; prev="$a"; done
-echo dmg > "$out"
+exit 1
 EOF
 
 cat > "$STUB_BIN/hdiutil" <<'EOF'
@@ -79,13 +76,15 @@ run_update() {
   CALL_LOG="$WORK/calls"
   : > "$CALL_LOG"
   export CALL_LOG
+  echo fake-dmg > "$WORK/Tyvox-1.0.0-arm64.dmg"
   PATH="$STUB_BIN:$PATH" WORK_DIR="$WORK" RM_FAIL="${RM_FAIL:-}" \
-    bash "$UPDATE_SCRIPT" 1234 "$WORK/Applications/Tyvox.app" "https://example/Tyvox-1.0.0-arm64.dmg"
+    bash "$UPDATE_SCRIPT" 1234 "$WORK/Applications/Tyvox.app" "$WORK/Tyvox-1.0.0-arm64.dmg"
   cat "$CALL_LOG"
 }
 
 output=$(run_update)
-echo "$output" | grep -q "curl .*https://example/Tyvox-1.0.0-arm64.dmg" || fail "download missing"
+echo "$output" | grep -q "hdiutil attach $WORK/Tyvox-1.0.0-arm64.dmg" || fail "attach of given dmg path missing"
+! echo "$output" | grep -q "curl" || fail "script must not download, the app passes a local dmg"
 ! echo "$output" | grep -q "osascript" || fail "osascript used on happy path"
 echo "$output" | grep -q "open $WORK/Applications/Tyvox.app" || fail "relaunch missing"
 echo "$output" | grep -q "xattr -rd com.apple.quarantine" || fail "quarantine removal missing"

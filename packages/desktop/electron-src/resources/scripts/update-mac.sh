@@ -3,7 +3,7 @@ set -euo pipefail
 
 APP_PID="$1"
 APP_PATH="$2"
-DMG_URL="$3"
+DMG_PATH="$3"
 APP_DIR="$(dirname "$APP_PATH")"
 
 while kill -0 "$APP_PID" 2>/dev/null; do sleep 0.5; done
@@ -13,8 +13,7 @@ mount_dir="${tmpdir}/mnt"
 mkdir -p "$mount_dir"
 trap "hdiutil detach '${mount_dir}' -quiet >/dev/null 2>&1 || true; rm -rf '${tmpdir}'" EXIT
 
-curl -fsSL -o "${tmpdir}/Tyvox.dmg" "$DMG_URL"
-hdiutil attach "${tmpdir}/Tyvox.dmg" -nobrowse -readonly -mountpoint "$mount_dir" -quiet
+hdiutil attach "$DMG_PATH" -nobrowse -readonly -mountpoint "$mount_dir" -quiet
 
 replace_app() {
   rm -rf "$APP_PATH" &&
