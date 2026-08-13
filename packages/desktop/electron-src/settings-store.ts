@@ -13,16 +13,17 @@ function getSettingsPath(): string {
 export function loadLocalSettings(): LocalSettings {
   const path = getSettingsPath();
   if (!existsSync(path)) {
-    return { useLocalBackend: true, serverUrl: DEFAULT_BASE_URL };
+    return { launchAtLogin: false, useLocalBackend: true, serverUrl: DEFAULT_BASE_URL };
   }
   try {
     const parsed = JSON.parse(readFileSync(path, "utf-8")) as Partial<LocalSettings>;
     return {
+      launchAtLogin: parsed.launchAtLogin ?? false,
       useLocalBackend: parsed.useLocalBackend ?? true,
       serverUrl: parsed.serverUrl || DEFAULT_BASE_URL,
     };
   } catch {
-    return { useLocalBackend: true, serverUrl: DEFAULT_BASE_URL };
+    return { launchAtLogin: false, useLocalBackend: true, serverUrl: DEFAULT_BASE_URL };
   }
 }
 

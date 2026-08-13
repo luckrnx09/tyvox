@@ -21,13 +21,19 @@ describe("settings-store", () => {
 
   it("returns defaults when file does not exist", () => {
     const settings = loadLocalSettings();
+    expect(settings.launchAtLogin).toBe(false);
     expect(settings.useLocalBackend).toBe(true);
     expect(settings.serverUrl).toBe("http://127.0.0.1:23456");
   });
 
   it("persists and loads custom settings", () => {
-    saveLocalSettings({ useLocalBackend: false, serverUrl: "http://192.168.1.10:23456" });
+    saveLocalSettings({
+      launchAtLogin: true,
+      useLocalBackend: false,
+      serverUrl: "http://192.168.1.10:23456",
+    });
     const settings = loadLocalSettings();
+    expect(settings.launchAtLogin).toBe(true);
     expect(settings.useLocalBackend).toBe(false);
     expect(settings.serverUrl).toBe("http://192.168.1.10:23456");
   });

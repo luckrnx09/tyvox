@@ -1,4 +1,4 @@
-import { BrowserWindow, Menu, ipcMain, systemPreferences } from "electron";
+import { BrowserWindow, Menu, app, ipcMain, systemPreferences } from "electron";
 import { randomUUID } from "node:crypto";
 import { UiohookKey, uIOhook } from "uiohook-napi";
 import {
@@ -283,6 +283,7 @@ export function registerAllHandlers(
   ipcMain.handle(IPC.LOCAL_SETTINGS_LOAD, () => loadLocalSettings());
   ipcMain.handle(IPC.LOCAL_SETTINGS_SAVE, (_event, settings: LocalSettings) => {
     saveLocalSettings(settings);
+    app.setLoginItemSettings({ openAtLogin: settings.launchAtLogin });
   });
 
   ipcMain.handle(IPC.AUDIO_DEVICES_SYNC, (_event, devices: AudioDevice[]) => {

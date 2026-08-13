@@ -250,6 +250,28 @@ export const GeneralTab = ({ onNavigate }: GeneralTabProps) => {
     <Card variant="outlined">
       <CardContent sx={{ display: "flex", flexDirection: "column", gap: 2.5, py: 2.5, px: 3 }}>
         <Typography variant="h6" sx={{ fontSize: 15, fontWeight: 600 }}>
+          {t("general.basic")}
+        </Typography>
+        {isLoaded && localSettings && (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Typography variant="body1">{t("general.launchAtLogin")}</Typography>
+            <Switch
+              checked={localSettings.launchAtLogin}
+              onChange={(e) => updateLocalSettings({ launchAtLogin: e.target.checked })}
+              slotProps={{ input: { "aria-label": t("general.launchAtLogin") } }}
+            />
+          </Box>
+        )}
+
+        <Divider />
+
+        <Typography variant="h6" sx={{ fontSize: 15, fontWeight: 600 }}>
           {t("general.backend")}
         </Typography>
         {isLoaded && localSettings && (

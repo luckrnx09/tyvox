@@ -63,6 +63,8 @@ export const en = {
   general: {
     appearance: "Appearance",
     backend: "Backend",
+    basic: "Basic",
+    launchAtLogin: "Launch at login",
     theme: "Theme",
     themeSystem: "System",
     themeDark: "Dark",
