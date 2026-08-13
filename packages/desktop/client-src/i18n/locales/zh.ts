@@ -63,6 +63,8 @@ export const zh = {
   general: {
     appearance: "外观",
     backend: "后端",
+    basic: "基本",
+    launchAtLogin: "开机自动启动",
     theme: "主题",
     themeSystem: "跟随系统",
     themeDark: "深色",

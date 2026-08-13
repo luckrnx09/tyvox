@@ -7,6 +7,7 @@ import { IPC } from "../shared/channels";
 import { updaterService } from "./updater";
 import { stopBackend } from "./backend";
 import { stopUiohook } from "./hotkey";
+import { loadLocalSettings } from "./settings-store";
 import { getResourcePath } from "./utils/paths";
 import { isMac } from "./utils/platform";
 import { logger } from "./utils/logger";
@@ -50,6 +51,7 @@ const openSettings = (): void => {
 };
 
 const startApp = async (): Promise<void> => {
+  app.setLoginItemSettings({ openAtLogin: loadLocalSettings().launchAtLogin });
   if (isMac() && !app.isPackaged) {
     app.dock?.setIcon(nativeImage.createFromPath(getResourcePath("icon.png")));
   }
