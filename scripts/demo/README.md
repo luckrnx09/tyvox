@@ -11,7 +11,10 @@ bash scripts/demo/generate.sh
 ```
 
 Requirements: repo dependencies installed (`pnpm install`) and `ffmpeg` on
-PATH. Runs headless — no display needed.
+PATH. Runs headless — no display needed. Produces both
+`assets/demo/polish-demo.gif` and `polish-demo.mp4`; the README embeds the
+mp4 via an autoplaying muted `<video>` tag because GitHub pauses GIFs for
+visitors with reduced-motion settings.
 
 ## Editing the content
 

@@ -19,7 +19,7 @@
 ---
 
 <p align="center">
-  <img src="assets/demo/polish-demo.gif" alt="Tyvox polish demo: raw speech in, clean text out" width="960" />
+  <video src="assets/demo/polish-demo.mp4" autoplay loop muted playsinline width="960"></video>
 </p>
 
 Typing is the slowest part of thinking. Tyvox removes it: press a hotkey anywhere on your desktop, speak naturally, and polished text lands exactly where you were about to type. Speech recognition runs on your machine by default, and an optional LLM pass turns rambling into clean prose — or another language.
