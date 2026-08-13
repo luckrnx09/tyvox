@@ -6,6 +6,7 @@ import { registerAllHandlers, trayService, checkPermissions } from "./ipc";
 import { IPC } from "../shared/channels";
 import { updaterService } from "./updater";
 import { stopBackend } from "./backend";
+import { stopUiohook } from "./hotkey";
 import { getResourcePath } from "./utils/paths";
 import { isMac } from "./utils/platform";
 import { logger } from "./utils/logger";
@@ -105,6 +106,7 @@ app.on("window-all-closed", () => {
 });
 
 app.on("before-quit", () => {
+  stopUiohook();
   if (settingsWindow && !settingsWindow.isDestroyed()) {
     settingsWindow.destroy();
   }
