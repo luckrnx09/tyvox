@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.10] - 2026-08-13
+
+### Added
+
+- feat(desktop): update UX — progress download, quiet quit, About layout (#16)
+
 ## [0.0.9] - 2026-08-13
 
 ### Changed
