@@ -125,6 +125,11 @@ export const AboutTab = () => {
           >
             {t("about.checkUpdate")}
           </Button>
+          {statusText && (
+            <Typography variant="body2" color="text.secondary">
+              {statusText}
+            </Typography>
+          )}
           {status?.state === "available" && platform === "darwin" && (
             <Button
               size="small"
@@ -154,12 +159,6 @@ export const AboutTab = () => {
             </Button>
           )}
         </Stack>
-
-        {statusText && (
-          <Typography variant="body2" color="text.secondary">
-            {statusText}
-          </Typography>
-        )}
       </CardContent>
     </Card>
   );
