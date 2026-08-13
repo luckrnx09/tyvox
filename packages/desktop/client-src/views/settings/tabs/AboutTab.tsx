@@ -5,6 +5,7 @@ import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Link from "@mui/material/Link";
+import LinearProgress from "@mui/material/LinearProgress";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -49,6 +50,8 @@ export const AboutTab = () => {
         return t("about.checking");
       case "available":
         return t("about.newVersion", { version: status.version });
+      case "downloading":
+        return t("about.downloading", { percent: status.percent });
       case "downloaded":
         return t("about.downloaded", { version: status.version });
       case "not-available":
@@ -129,6 +132,13 @@ export const AboutTab = () => {
             <Typography variant="body2" color="text.secondary">
               {statusText}
             </Typography>
+          )}
+          {status?.state === "downloading" && platform === "darwin" && (
+            <LinearProgress
+              variant="determinate"
+              value={status.percent}
+              sx={{ alignSelf: "center", width: 160 }}
+            />
           )}
           {status?.state === "available" && platform === "darwin" && (
             <Button

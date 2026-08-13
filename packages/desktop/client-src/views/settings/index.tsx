@@ -6,6 +6,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import LinearProgress from "@mui/material/LinearProgress";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MicOutlinedIcon from "@mui/icons-material/MicOutlined";
 import AutoFixHighOutlinedIcon from "@mui/icons-material/AutoFixHighOutlined";
@@ -42,6 +43,8 @@ export const Settings = () => {
   const { load, isLoaded } = useSettings();
   const [page, setPage] = useState<Page>("general");
   const [updateVersion, setUpdateVersion] = useState<string | null>(null);
+  const [updatePercent, setUpdatePercent] = useState<number | null>(null);
+  const [updateInstalling, setUpdateInstalling] = useState(false);
   const platformRef = useRef<PlatformResult["platform"] | null>(null);
   const autoCheckPendingRef = useRef(false);
 
@@ -64,6 +67,21 @@ export const Settings = () => {
 
   useIpcListener(IPC.UPDATE_STATUS, (payload: unknown) => {
     const status = payload as UpdateStatus;
+    if (platformRef.current === "darwin" && updateVersion !== null) {
+      if (status.state === "downloading") {
+        setUpdatePercent(status.percent);
+        return;
+      }
+      if (status.state === "downloaded") {
+        setUpdateInstalling(true);
+        return;
+      }
+      if (status.state === "error") {
+        setUpdateVersion(null);
+        setUpdatePercent(null);
+        return;
+      }
+    }
     if (!autoCheckPendingRef.current) return;
     if (status.state === "checking") return;
     autoCheckPendingRef.current = false;
@@ -75,12 +93,12 @@ export const Settings = () => {
   const dismissUpdate = () => {
     snoozeUpdates();
     setUpdateVersion(null);
+    setUpdatePercent(null);
+    setUpdateInstalling(false);
   };
 
   const applyUpdate = () => {
-    setUpdateVersion(null);
-    const channel = platformRef.current === "darwin" ? IPC.UPDATE_INSTALL : IPC.UPDATE_QUIT_INSTALL;
-    window.electron.invoke(channel).catch(() => {});
+    window.electron.invoke(IPC.UPDATE_INSTALL).catch(() => {});
   };
 
   const navigate = (next: Page) => {
@@ -193,15 +211,31 @@ export const Settings = () => {
         {page === "about" && <AboutTab />}
       </Box>
 
-      <Dialog open={updateVersion !== null} onClose={dismissUpdate}>
+      <Dialog
+        open={updateVersion !== null}
+        onClose={updatePercent === null && !updateInstalling ? dismissUpdate : undefined}
+      >
         <DialogTitle>{t("update.availableTitle")}</DialogTitle>
-        <DialogContent>{t("update.availableBody", { version: updateVersion })}</DialogContent>
-        <DialogActions>
-          <Button onClick={dismissUpdate}>{t("update.later")}</Button>
-          <Button onClick={applyUpdate} variant="contained">
-            {t("update.now")}
-          </Button>
-        </DialogActions>
+        <DialogContent>
+          {updateInstalling ? (
+            t("update.installing")
+          ) : updatePercent !== null ? (
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1, minWidth: 280 }}>
+              {t("update.downloading", { percent: updatePercent })}
+              <LinearProgress variant="determinate" value={updatePercent} />
+            </Box>
+          ) : (
+            t("update.availableBody", { version: updateVersion })
+          )}
+        </DialogContent>
+        {updatePercent === null && !updateInstalling && (
+          <DialogActions>
+            <Button onClick={dismissUpdate}>{t("update.later")}</Button>
+            <Button onClick={applyUpdate} variant="contained">
+              {t("update.now")}
+            </Button>
+          </DialogActions>
+        )}
       </Dialog>
     </Box>
   );

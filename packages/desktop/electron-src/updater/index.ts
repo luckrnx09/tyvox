@@ -1,5 +1,8 @@
 import { app, net, type BrowserWindow } from "electron";
 import electronUpdater, { type AppUpdater } from "electron-updater";
+import { once } from "node:events";
+import { createWriteStream } from "node:fs";
+import { join } from "node:path";
 import { IPC } from "../../shared/channels";
 import type { UpdateStatus } from "../../shared/types/ipc";
 import { logger } from "../utils/logger";
@@ -37,6 +40,7 @@ class UpdaterService {
   #autoUpdater: AppUpdater | null = null;
   #getSettingsWindow: (() => BrowserWindow | null) | null = null;
   #macDmgUrl: string | null = null;
+  #macVersion: string | null = null;
 
   init(getSettingsWindow: () => BrowserWindow | null): void {
     this.#getSettingsWindow = getSettingsWindow;
@@ -85,8 +89,8 @@ class UpdaterService {
   }
 
   installUpdate(): void {
-    if (!isMac() || !this.#macDmgUrl) return;
-    installMacUpdate(this.#macDmgUrl);
+    if (!isMac()) return;
+    void this.#downloadAndInstallMac();
   }
 
   // macOS builds skip electron-updater: a detached script swaps the app
@@ -101,9 +105,52 @@ class UpdaterService {
       }
       const suffix = process.arch === "arm64" ? "-arm64" : "";
       this.#macDmgUrl = `${RELEASE_DOWNLOAD_BASE}/${tag}/Tyvox-${latest}${suffix}.dmg`;
+      this.#macVersion = latest;
       this.#emit({ state: "available", version: latest });
     } catch (err) {
       logger.warn("Manual update check failed", { error: String(err) });
+      this.#emit({ state: "error", message: String(err) });
+    }
+  }
+
+  async #downloadAndInstallMac(): Promise<void> {
+    const url = this.#macDmgUrl;
+    const version = this.#macVersion;
+    if (!url || !version) return;
+    const target = join(app.getPath("temp"), `Tyvox-${version}.dmg`);
+    try {
+      const response = await net.fetch(url);
+      if (!response.ok || !response.body) {
+        throw new Error(`Download failed: HTTP ${response.status}`);
+      }
+      const total = Number(response.headers.get("content-length") ?? 0);
+      const reader = response.body.getReader();
+      const file = createWriteStream(target);
+      let received = 0;
+      let lastPercent = -1;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        if (!file.write(value)) {
+          await once(file, "drain");
+        }
+        received += value.byteLength;
+        if (total > 0) {
+          const percent = Math.min(99, Math.round((received / total) * 100));
+          if (percent !== lastPercent) {
+            lastPercent = percent;
+            this.#emit({ state: "downloading", percent });
+          }
+        }
+      }
+      await new Promise<void>((resolve, reject) => {
+        file.once("error", reject);
+        file.end(resolve);
+      });
+      this.#emit({ state: "downloaded", version });
+      installMacUpdate(target);
+    } catch (err) {
+      logger.warn("macOS update download failed", { error: String(err) });
       this.#emit({ state: "error", message: String(err) });
     }
   }

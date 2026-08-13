@@ -20,6 +20,7 @@ export interface PlatformResult {
 export type UpdateStatus =
   | { readonly state: "checking" }
   | { readonly state: "available"; readonly version: string }
+  | { readonly state: "downloading"; readonly percent: number }
   | { readonly state: "downloaded"; readonly version: string }
   | { readonly state: "not-available" }
   | { readonly state: "error"; readonly message: string };

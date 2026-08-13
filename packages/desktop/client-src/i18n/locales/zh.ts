@@ -2,6 +2,7 @@ export const zh = {
   about: {
     checkUpdate: "检查更新",
     checking: "检查中…",
+    downloading: "下载中… {{percent}}%",
     downloaded: "v{{version}} 已下载，重启后生效",
     github: "GitHub 仓库",
     hint: "你的声音，替你打字。",
@@ -167,6 +168,8 @@ export const zh = {
   update: {
     availableTitle: "发现新版本",
     availableBody: "Tyvox {{version}} 已发布，现在更新吗？",
+    downloading: "正在下载… {{percent}}%",
+    installing: "正在安装，Tyvox 将自动重启。",
     later: "下次再说",
     now: "更新",
   },

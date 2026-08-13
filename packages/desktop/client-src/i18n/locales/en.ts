@@ -2,6 +2,7 @@ export const en = {
   about: {
     checkUpdate: "Check for Updates",
     checking: "Checking…",
+    downloading: "Downloading… {{percent}}%",
     downloaded: "v{{version}} downloaded — restart to update",
     github: "GitHub Repository",
     hint: "Your voice types for you.",
@@ -168,6 +169,8 @@ export const en = {
   update: {
     availableTitle: "Update available",
     availableBody: "Tyvox {{version}} is available. Update now?",
+    downloading: "Downloading… {{percent}}%",
+    installing: "Installing — Tyvox will relaunch automatically.",
     later: "Later",
     now: "Update",
   },
