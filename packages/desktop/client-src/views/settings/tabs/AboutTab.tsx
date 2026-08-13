@@ -114,20 +114,21 @@ export const AboutTab = () => {
           >
             {t("about.reportIssue")}
           </Link>
-          <Button
-            size="small"
-            variant="text"
-            startIcon={<RefreshIcon />}
-            onClick={checkUpdate}
-            disabled={status?.state === "checking"}
-            sx={{
-              textTransform: "none",
-              color: "text.secondary",
-              "&:hover": { color: "text.primary" },
-            }}
-          >
-            {t("about.checkUpdate")}
-          </Button>
+          {(!status || status.state === "error") && (
+            <Button
+              size="small"
+              variant="text"
+              startIcon={<RefreshIcon />}
+              onClick={checkUpdate}
+              sx={{
+                textTransform: "none",
+                color: "text.secondary",
+                "&:hover": { color: "text.primary" },
+              }}
+            >
+              {t("about.checkUpdate")}
+            </Button>
+          )}
           {statusText && (
             <Typography variant="body2" color="text.secondary">
               {statusText}
