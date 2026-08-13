@@ -3,8 +3,8 @@ const { mkdirSync, writeFileSync } = require("node:fs");
 const { join } = require("node:path");
 
 const FRAME_MS = 66;
-const WIDTH = 1280;
-const HEIGHT = 460;
+const WIDTH = 1152;
+const HEIGHT = 622;
 
 const framesDir = process.argv.at(-1);
 if (!framesDir || framesDir.startsWith("-") || framesDir.endsWith(".cjs")) {
