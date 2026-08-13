@@ -1,185 +1,236 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
-<meta charset="utf-8" />
-<style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    width: 1280px;
-    height: 460px;
-    background: #08090a;
-    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    padding: 36px 64px;
-  }
-  #brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    opacity: 0.85;
-  }
-  #brand img { width: 34px; height: 34px; }
-  #brand span {
-    color: #e8eaed;
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 0.4px;
-  }
-  #stage {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 18px;
-  }
-  .label {
-    color: #6b7280;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-  #raw {
-    color: #9aa0a6;
-    font-family: "SF Mono", Menlo, Consolas, monospace;
-    font-size: 27px;
-    line-height: 1.45;
-    min-height: 80px;
-    white-space: pre-line;
-  }
-  #sep {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #6c5ce7;
-    font-size: 20px;
-    opacity: 0;
-    transition: opacity 0.25s;
-  }
-  #sep.on { opacity: 1; }
-  #sep .dot { animation: pulse 0.5s infinite alternate; }
-  @keyframes pulse { from { opacity: 0.25; } to { opacity: 1; } }
-  #out {
-    color: #f3f4f6;
-    font-size: 27px;
-    line-height: 1.45;
-    min-height: 80px;
-    white-space: pre-line;
-  }
-  .hl { color: #a79bff; font-weight: 600; }
-  .caret {
-    display: inline-block;
-    width: 2px;
-    height: 26px;
-    background: #6c5ce7;
-    vertical-align: -4px;
-    animation: blink 0.8s steps(1) infinite;
-  }
-  @keyframes blink { 50% { opacity: 0; } }
-  #scene { transition: opacity 0.3s; }
-  #scene.fade { opacity: 0; }
-</style>
-</head>
-<body>
-  <div id="brand"><img src="../../assets/logo/logo.png" /><span>Tyvox</span></div>
-  <div id="stage">
-    <div id="scene">
-      <div class="label">You said</div>
-      <div id="raw"></div>
-      <div id="sep"><span class="dot">✦</span><span class="dot">✦</span><span class="dot">✦</span></div>
-      <div class="label">You get</div>
-      <div id="out"></div>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        width: 1280px;
+        height: 460px;
+        background: #08090a;
+        font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        padding: 36px 64px;
+      }
+      #brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        opacity: 0.85;
+      }
+      #brand img {
+        width: 34px;
+        height: 34px;
+      }
+      #brand span {
+        color: #e8eaed;
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+      }
+      #stage {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 18px;
+      }
+      .label {
+        color: #6b7280;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+      #raw {
+        color: #9aa0a6;
+        font-family: "SF Mono", Menlo, Consolas, monospace;
+        font-size: 27px;
+        line-height: 1.45;
+        min-height: 80px;
+        white-space: pre-line;
+      }
+      #sep {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #6c5ce7;
+        font-size: 20px;
+        opacity: 0;
+        transition: opacity 0.25s;
+      }
+      #sep.on {
+        opacity: 1;
+      }
+      #sep .dot {
+        animation: pulse 0.5s infinite alternate;
+      }
+      @keyframes pulse {
+        from {
+          opacity: 0.25;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      #out {
+        color: #f3f4f6;
+        font-size: 27px;
+        line-height: 1.45;
+        min-height: 80px;
+        white-space: pre-line;
+      }
+      .hl {
+        color: #a79bff;
+        font-weight: 600;
+      }
+      .caret {
+        display: inline-block;
+        width: 2px;
+        height: 26px;
+        background: #6c5ce7;
+        vertical-align: -4px;
+        animation: blink 0.8s steps(1) infinite;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      #scene {
+        transition: opacity 0.3s;
+      }
+      #scene.fade {
+        opacity: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="brand"><img src="../../assets/logo/logo.png" /><span>Tyvox</span></div>
+    <div id="stage">
+      <div id="scene">
+        <div class="label">You said</div>
+        <div id="raw"></div>
+        <div id="sep">
+          <span class="dot">✦</span><span class="dot">✦</span><span class="dot">✦</span>
+        </div>
+        <div class="label">You get</div>
+        <div id="out"></div>
+      </div>
     </div>
-  </div>
-<script>
-const SCENES = [
-  {
-    raw: "the meeting is on tuesday, wait no, its wednesday",
-    out: [["The meeting is on ", 0], ["Wednesday", 1], [".", 0]],
-  },
-  {
-    raw: "um the the build failed, like, again",
-    out: [["The build failed again.", 0]],
-  },
-  {
-    raw: "remember to water the plants, feed the cat, and lock the door",
-    out: [["Remember to:\n", 0], ["1.", 1], [" Water the plants\n", 0], ["2.", 1], [" Feed the cat\n", 0], ["3.", 1], [" Lock the door", 0]],
-  },
-  {
-    raw: "i use cloud code for pair programming",
-    out: [["I use ", 0], ["Claude Code", 1], [" for pair programming.", 0]],
-  },
-  {
-    raw: "明天的会议改到下午三点",
-    out: [["Tomorrow's meeting has been moved to ", 0], ["3 PM", 1], [".", 0]],
-  },
-];
+    <script>
+      const SCENES = [
+        {
+          raw: "the meeting is on tuesday, wait no, its wednesday",
+          out: [
+            ["The meeting is on ", 0],
+            ["Wednesday", 1],
+            [".", 0],
+          ],
+        },
+        {
+          raw: "um the the build failed, like, again",
+          out: [["The build failed again.", 0]],
+        },
+        {
+          raw: "remember to water the plants, feed the cat, and lock the door",
+          out: [
+            ["Remember to:\n", 0],
+            ["1.", 1],
+            [" Water the plants\n", 0],
+            ["2.", 1],
+            [" Feed the cat\n", 0],
+            ["3.", 1],
+            [" Lock the door", 0],
+          ],
+        },
+        {
+          raw: "i use cloud code for pair programming",
+          out: [
+            ["I use ", 0],
+            ["Claude Code", 1],
+            [" for pair programming.", 0],
+          ],
+        },
+        {
+          raw: "明天的会议改到下午三点",
+          out: [
+            ["Tomorrow's meeting has been moved to ", 0],
+            ["3 PM", 1],
+            [".", 0],
+          ],
+        },
+      ];
 
-const RAW_CHAR_MS = 26;
-const OUT_CHAR_MS = 20;
-const PROCESS_MS = 700;
-const HOLD_MS = 1500;
-const FADE_MS = 350;
+      const RAW_CHAR_MS = 26;
+      const OUT_CHAR_MS = 20;
+      const PROCESS_MS = 700;
+      const HOLD_MS = 1500;
+      const FADE_MS = 350;
 
-const rawEl = document.getElementById("raw");
-const outEl = document.getElementById("out");
-const sepEl = document.getElementById("sep");
-const sceneEl = document.getElementById("scene");
+      const rawEl = document.getElementById("raw");
+      const outEl = document.getElementById("out");
+      const sepEl = document.getElementById("sep");
+      const sceneEl = document.getElementById("scene");
 
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-function expand(tokens) {
-  const chars = [];
-  for (const [text, hl] of tokens) {
-    for (const ch of text) chars.push([ch, hl]);
-  }
-  return chars;
-}
+      function expand(tokens) {
+        const chars = [];
+        for (const [text, hl] of tokens) {
+          for (const ch of text) chars.push([ch, hl]);
+        }
+        return chars;
+      }
 
-function renderChars(el, chars) {
-  el.innerHTML = chars
-    .map(([ch, hl]) => {
-      const escaped = ch === "\n" ? "\n" : ch.replace(/&/g, "&amp;").replace(/</g, "&lt;");
-      return hl ? `<span class="hl">${escaped}</span>` : escaped;
-    })
-    .join("");
-}
+      function renderChars(el, chars) {
+        el.innerHTML = chars
+          .map(([ch, hl]) => {
+            const escaped = ch === "\n" ? "\n" : ch.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+            return hl ? `<span class="hl">${escaped}</span>` : escaped;
+          })
+          .join("");
+      }
 
-async function typeText(el, chars, charMs) {
-  const caret = '<span class="caret"></span>';
-  for (let i = 0; i <= chars.length; i++) {
-    renderChars(el, chars.slice(0, i));
-    el.insertAdjacentHTML("beforeend", caret);
-    await sleep(charMs);
-  }
-  renderChars(el, chars);
-}
+      async function typeText(el, chars, charMs) {
+        const caret = '<span class="caret"></span>';
+        for (let i = 0; i <= chars.length; i++) {
+          renderChars(el, chars.slice(0, i));
+          el.insertAdjacentHTML("beforeend", caret);
+          await sleep(charMs);
+        }
+        renderChars(el, chars);
+      }
 
-async function playScene(scene) {
-  rawEl.innerHTML = "";
-  outEl.innerHTML = "";
-  sepEl.classList.remove("on");
-  sceneEl.classList.remove("fade");
-  await sleep(250);
-  await typeText(rawEl, expand([[scene.raw, 0]]), RAW_CHAR_MS);
-  sepEl.classList.add("on");
-  await sleep(PROCESS_MS);
-  sepEl.classList.remove("on");
-  await typeText(outEl, expand(scene.out), OUT_CHAR_MS);
-  await sleep(HOLD_MS);
-  sceneEl.classList.add("fade");
-  await sleep(FADE_MS);
-}
+      async function playScene(scene) {
+        rawEl.innerHTML = "";
+        outEl.innerHTML = "";
+        sepEl.classList.remove("on");
+        sceneEl.classList.remove("fade");
+        await sleep(250);
+        await typeText(rawEl, expand([[scene.raw, 0]]), RAW_CHAR_MS);
+        sepEl.classList.add("on");
+        await sleep(PROCESS_MS);
+        sepEl.classList.remove("on");
+        await typeText(outEl, expand(scene.out), OUT_CHAR_MS);
+        await sleep(HOLD_MS);
+        sceneEl.classList.add("fade");
+        await sleep(FADE_MS);
+      }
 
-(async () => {
-  await sleep(400);
-  for (const scene of SCENES) {
-    await playScene(scene);
-  }
-  window.__done = true;
-})();
-</script>
-</body>
+      (async () => {
+        await sleep(400);
+        for (const scene of SCENES) {
+          await playScene(scene);
+        }
+        window.__done = true;
+      })();
+    </script>
+  </body>
 </html>
