@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.11] - 2026-08-13
+
+### Added
+
+- feat(desktop): launch-at-login toggle (Basic section) (#17)
+
 ## [0.0.10] - 2026-08-13
 
 ### Added
