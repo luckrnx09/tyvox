@@ -8,6 +8,7 @@
     "start": "node dist/index.mjs",
     "build": "tsup src/index.ts --format esm",
     "eval": "tsx src/eval/run.ts",
+    "ci:asr-smoke": "tsx src/ci/asr-smoke.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
