@@ -24,8 +24,9 @@
 
 Typing is the slowest part of thinking. Tyvox removes it: press a hotkey anywhere on your desktop, speak naturally, and polished text lands exactly where you were about to type. Speech recognition runs on your machine by default, and an optional LLM pass turns rambling into clean prose — or another language.
 
-> [!WARNING]
-> Tyvox is in active development. The backend API has no authentication yet — never expose it to untrusted networks or the public internet. Keep it on `127.0.0.1` (the default) or bind it to localhost as the provided `docker-compose.yml` does.
+> [!IMPORTANT]
+> Currently, only the macOS version has been tested on actual devices. After installation, some features of the Windows and Linux versions may not work properly. Please help us fix these issues.
+> Get started: https://github.com/luckrnx09/tyvox/issues/27
 
 ## Why Tyvox?
 
@@ -100,6 +101,9 @@ The app asks for two permissions — **microphone** and **accessibility** (globa
 - **Speech recognition is local by default.** The embedded ASR runs entirely on your machine through `whisper`/`sensevoice`; audio and transcripts are not sent anywhere unless you explicitly enable a cloud provider.
 - **Cloud providers are optional.** Cloud ASR or LLM polish can be enabled in settings; when enabled, only the necessary data is sent to the configured provider.
 - **Your data stays on device.** Configuration, vocabulary, and downloaded models are stored in `~/.tyvox`.
+
+> [!WARNING]
+> Tyvox is in active development. The backend API has no authentication yet — never expose it to untrusted networks or the public internet. Keep it on `127.0.0.1` (the default) or bind it to localhost as the provided `docker-compose.yml` does.
 
 ## Development
 
