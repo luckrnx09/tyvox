@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { mkdir, unlink } from "node:fs/promises";
+import { mkdir, rm, unlink } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import type { SpeechConfig } from "@tyvox/sdk/contracts";
 import type { ASRProvider } from "./provider.js";
@@ -40,11 +40,15 @@ async function extractArchive(archivePath: string, destinationDirectory: string)
   await mkdir(destinationDirectory, { recursive: true });
   await new Promise<void>((resolve, reject) => {
     const childProcess = spawn("tar", ["-xf", archivePath, "-C", destinationDirectory], {
-      stdio: "inherit",
+      stdio: ["ignore", "inherit", "pipe"],
+    });
+    let stderr = "";
+    childProcess.stderr?.on("data", (chunk: Buffer) => {
+      stderr += chunk.toString();
     });
     childProcess.on("close", (code) => {
       if (code !== 0) {
-        reject(new Error(`tar exited with code ${code}`));
+        reject(new Error(`tar exited with code ${code}: ${stderr.trim()}`));
         return;
       }
       resolve();
@@ -95,6 +99,9 @@ export function createBinaryASRProvider(spec: BinaryASRSpec): ASRProvider {
         await downloadAtomic(artifact.urls, archivePath, report, artifact.sha256);
         try {
           await extractArchive(archivePath, artifact.archiveDirectory);
+        } catch (error) {
+          await rm(artifact.archiveDirectory, { recursive: true, force: true });
+          throw error;
         } finally {
           await unlink(archivePath).catch(() => {});
         }

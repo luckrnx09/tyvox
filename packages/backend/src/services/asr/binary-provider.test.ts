@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { mkdtemp, mkdir, writeFile } from "node:fs/promises";
+import { mkdtemp, mkdir, writeFile, access } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { EventEmitter } from "node:events";
@@ -55,7 +55,7 @@ function mockDownloadCreatesFile(): void {
   });
 }
 
-function mockSpawn(stdout: string, exitCode: number): void {
+function mockSpawn(stdout: string, exitCode: number, stderr = ""): void {
   vi.mocked(spawn).mockImplementation(() => {
     const proc = new EventEmitter() as EventEmitter & {
       stdout: EventEmitter;
@@ -67,6 +67,7 @@ function mockSpawn(stdout: string, exitCode: number): void {
     proc.kill = () => {};
     setImmediate(() => {
       if (stdout) proc.stdout.emit("data", Buffer.from(stdout));
+      if (stderr) proc.stderr.emit("data", Buffer.from(stderr));
       proc.emit("close", exitCode);
     });
     return proc as unknown as ReturnType<typeof spawn>;
@@ -197,6 +198,46 @@ describe("prepare", () => {
     expect(tarCall).toBeDefined();
     expect(tarCall![1]).toContain(join(dir, "bin"));
     expect(setExecutableIfNeeded).toHaveBeenCalledWith(join(dir, "bin", "root", "bin", "cli"));
+  });
+
+  it("reports tar stderr when archive extraction fails", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "asr-"));
+    vi.mocked(downloadAtomic).mockResolvedValue(undefined);
+    mockSpawn("", 1, "tar: Permission denied");
+    const provider = createBinaryASRProvider(
+      createSpec(dir, {
+        binary: () => ({
+          path: join(dir, "bin", "root", "bin", "cli"),
+          urls: ["https://example.com/cli.tar.bz2"],
+          sha256: "a".repeat(64),
+          executable: true,
+          archiveDirectory: join(dir, "bin"),
+        }),
+      }),
+    );
+
+    await expect(provider.prepare("base")).rejects.toThrow("tar: Permission denied");
+  });
+
+  it("removes the archive directory when extraction fails", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "asr-"));
+    vi.mocked(downloadAtomic).mockResolvedValue(undefined);
+    mockSpawn("", 1, "boom");
+    const archiveDirectory = join(dir, "bin");
+    const provider = createBinaryASRProvider(
+      createSpec(dir, {
+        binary: () => ({
+          path: join(dir, "bin", "root", "bin", "cli"),
+          urls: ["https://example.com/cli.tar.bz2"],
+          sha256: "a".repeat(64),
+          executable: true,
+          archiveDirectory,
+        }),
+      }),
+    );
+
+    await expect(provider.prepare("base")).rejects.toThrow("tar exited with code 1");
+    await expect(access(archiveDirectory)).rejects.toThrow();
   });
 
   it("skips download for existing artifacts", async () => {
