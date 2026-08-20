@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.0.12] - 2026-08-20
+
+### Fixed
+
+- fix(backend): surface tar stderr on ASR extraction failure (#24)
+- fix(desktop): About tab check button visibility (#18)
+
+### Changed
+
+- docs: demo GIF at portfolio-card aspect (1.85:1) (#23)
+- Revert "autoplaying demo video" (#20, #21) (#22)
+- docs: fix blank demo video (jsDelivr src) (#21)
+- docs: autoplaying demo video in README (#20)
+- docs: polish demo GIF in README hero (#19)
+
 ## [0.0.11] - 2026-08-13
 
 ### Added
