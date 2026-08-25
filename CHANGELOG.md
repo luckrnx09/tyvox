@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.0.14] - 2026-08-25
+
+### Fixed
+
+- fix(desktop): apply settings window top padding only on macOS (#34)
+- fix(scripts): adapt release flow to squash-only merges (#33)
+
+### Changed
+
+- chore: exclude CHANGELOG.md from oxfmt (#32)
+
 ## [0.0.13] - 2026-08-25
 
 ### Fixed
