@@ -1,5 +1,6 @@
 import { spawn } from "node:child_process";
 import { platform } from "node:os";
+import { rootCertificates } from "node:tls";
 import { Agent, setGlobalDispatcher } from "undici";
 import { getLogger } from "./logger.js";
 
@@ -55,7 +56,7 @@ export async function installSystemCaCertificates(): Promise<void> {
     if (!pem.includes(PEM_MARKER)) {
       return;
     }
-    setGlobalDispatcher(new Agent({ connect: { ca: pem } }));
+    setGlobalDispatcher(new Agent({ connect: { ca: [...rootCertificates, pem] } }));
     logger.info({ bytes: pem.length }, "System CA certificates installed");
   } catch (error) {
     logger.warn({ error: String(error) }, "Failed to load system CA certificates, using defaults");
