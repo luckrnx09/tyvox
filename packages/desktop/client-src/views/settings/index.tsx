@@ -46,6 +46,7 @@ export const Settings = () => {
   const [updatePercent, setUpdatePercent] = useState<number | null>(null);
   const [updateInstalling, setUpdateInstalling] = useState(false);
   const platformRef = useRef<PlatformResult["platform"] | null>(null);
+  const [platform, setPlatform] = useState<PlatformResult["platform"] | null>(null);
   const autoCheckPendingRef = useRef(false);
 
   useEffect(() => {
@@ -57,6 +58,7 @@ export const Settings = () => {
       .invoke<PlatformResult>(IPC.GET_PLATFORM)
       .then((r) => {
         platformRef.current = r.platform;
+        setPlatform(r.platform);
       })
       .catch(() => {});
     if (autoUpdateCheckDone || isUpdateSnoozed()) return;
@@ -105,6 +107,8 @@ export const Settings = () => {
     setPage(next);
   };
 
+  const macLayout = platform === null || platform === "darwin";
+
   if (!isLoaded) {
     return (
       <Box
@@ -134,17 +138,19 @@ export const Settings = () => {
         width: "100%",
       }}
     >
-      <Box
-        sx={{
-          height: 40,
-          left: 0,
-          position: "absolute",
-          right: 0,
-          top: 0,
-          WebkitAppRegion: "drag",
-          zIndex: 1,
-        }}
-      />
+      {macLayout && (
+        <Box
+          sx={{
+            height: 40,
+            left: 0,
+            position: "absolute",
+            right: 0,
+            top: 0,
+            WebkitAppRegion: "drag",
+            zIndex: 1,
+          }}
+        />
+      )}
       <Box
         component="nav"
         sx={{
@@ -156,7 +162,7 @@ export const Settings = () => {
           pb: 2,
           pl: 1,
           pr: 1,
-          pt: 5,
+          pt: macLayout ? 5 : 2,
           width: 176,
         }}
       >
@@ -198,7 +204,7 @@ export const Settings = () => {
           overflowY: "auto",
           pb: 4,
           px: 4,
-          pt: 5,
+          pt: macLayout ? 5 : 2,
           scrollbarWidth: "none",
           "&::-webkit-scrollbar": { display: "none" },
         }}
