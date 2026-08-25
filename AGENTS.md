@@ -85,7 +85,7 @@ Text injected
 
 ## Release flow
 
-Run `pnpm release <version>` (e.g. `pnpm release 0.2.0`) to bump `package.json` and `packages/desktop/package.json`, generate a `CHANGELOG.md` entry from commits since the last tag, commit, tag, and push. Two workflows: `ci.yml` runs the gate suite (lint, format, typecheck, unit tests, Electron E2E under xvfb) on every PR and master push; `release.yml` is tag-triggered, re-runs the gates, then packages all three platforms and produces a GitHub release with the electron-updater metadata that clients poll. The tag must match `packages/desktop/package.json` version.
+Run `pnpm release <version>` (e.g. `pnpm release 0.2.0`) to bump `package.json` and `packages/desktop/package.json`, generate a `CHANGELOG.md` entry from commits since the last tag, open a release PR on branch `chore/release-v<version>`, wait for checks and squash-merge it, then tag the merged commit on master and push the tag. Requires the `gh` CLI. Two workflows: `ci.yml` runs the gate suite (lint, format, typecheck, unit tests, Electron E2E under xvfb) on every PR and master push; `release.yml` is tag-triggered, re-runs the gates, then packages all three platforms and produces a GitHub release with the electron-updater metadata that clients poll. The tag must match `packages/desktop/package.json` version.
 
 ## Code style
 
