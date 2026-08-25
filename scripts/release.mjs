@@ -136,7 +136,6 @@ function main() {
 
   run("git checkout master");
   run("git pull --ff-only");
-  run(`git branch -D ${branch}`);
   run(`git tag -a v${version} -m "v${version}"`);
   run(`git push origin v${version}`);
 
