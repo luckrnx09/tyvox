@@ -7,6 +7,7 @@
     "coverage",
     "release",
     "spikes",
+    "CHANGELOG.md",
     "packages/backend/src/eval/outputs"
   ]
 }
