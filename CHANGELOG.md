@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.0.13] - 2026-08-25
+
+### Fixed
+
+- fix(desktop): hide menu bar in settings window on Windows/Linux (#29)
+- fix(backend): merge system CAs with bundled CA store (#30)
+
+### Changed
+
+- docs: Revise warnings and add macOS testing note (#28)
+
 ## [0.0.12] - 2026-08-20
 
 ### Fixed
