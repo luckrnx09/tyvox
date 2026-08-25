@@ -31,6 +31,8 @@ export function createSettingsWindow(): BrowserWindow {
     width: SETTINGS.WIDTH,
   });
 
+  win.removeMenu();
+
   win.once("ready-to-show", () => {
     win.show();
     win.focus();
