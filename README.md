@@ -26,7 +26,6 @@ Typing is the slowest part of thinking. Tyvox removes it: press a hotkey anywher
 
 > [!IMPORTANT]
 > Currently, only the macOS version has been tested on actual devices. After installation, some features of the Windows and Linux versions may not work properly. Please help us fix these issues.
-> Get started: https://github.com/luckrnx09/tyvox/issues/27
 
 ## Why Tyvox?
 
