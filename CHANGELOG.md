@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.0.15] - 2026-08-26
+
+### Fixed
+
+- fix(scripts): drop redundant release branch deletion (#36)
+
+### Changed
+
+- chore: system CA via Node flag, drop electron-vite, bump deps, macOS CI gates (#37)
+
 ## [0.0.14] - 2026-08-25
 
 ### Fixed
