@@ -1,4 +1,4 @@
-import { BrowserWindow, app, globalShortcut, nativeImage } from "electron";
+import { BrowserWindow, app, globalShortcut, nativeImage, shell } from "electron";
 import { updateUserConfig } from "@tyvox/sdk/client";
 import { createCapsuleWindow } from "./ui/windows/capsule";
 import { createSettingsWindow } from "./ui/windows/settings";
@@ -13,6 +13,15 @@ import { isMac } from "./utils/platform";
 import { logger } from "./utils/logger";
 
 app.setName("Tyvox");
+
+app.on("web-contents-created", (_, contents) => {
+  contents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith("https://")) {
+      void shell.openExternal(url);
+    }
+    return { action: "deny" };
+  });
+});
 
 const hasLock = app.requestSingleInstanceLock();
 if (!hasLock) {
