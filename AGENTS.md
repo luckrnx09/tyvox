@@ -58,7 +58,7 @@ packages/
   - Services are stateless functions parameterized by `userId`; one global memory scheduler scans all users instead of per-user schedulers.
 - **desktop** — Main process (hotkey, IPC, tray, windows, updater, embedded backend), renderer (React, MUI, framer-motion), shared types/channels/limits. Key decisions:
   - The capsule window is `focusable: false` so the user's target field keeps focus for paste injection; consequently global key handling (hotkeys, Escape-to-cancel) lives in the main process, not the renderer.
-  - Packaged builds embed the backend and spawn it as a plain Node child, passing `TYVOX_PORT`/`TYVOX_HOST` into its environment; if something already serves that port (dev backend, future standalone deployment) it is reused as-is.
+  - Packaged builds embed the backend and spawn it as a plain Node child with `--use-system-ca` (so TLS-intercepting proxies like Cloudflare WARP work via the OS trust store), passing `TYVOX_PORT`/`TYVOX_HOST` into its environment; if something already serves that port (dev backend, future standalone deployment) it is reused as-is.
   - Auto-update uses electron-updater against GitHub Releases on Win/Linux; macOS builds are signed with a stable self-signed certificate and update in-app: the main process downloads the dmg with progress events (Electron net stack, system-proxy aware), then a detached script (`electron-src/resources/scripts/update-mac.sh`) swaps the app bundle and relaunches.
   - Tray icon is a single static logo; it does not reflect capsule state. Logo SVGs live in `assets/logo/` — they are the source of truth, PNGs are exports.
 - **sdk** — Source of truth for API data shapes (config, ASR models, vocabulary, transcribe) plus the generated client produced by `pnpm codegen` (orval + post-process for PascalCase type names). `sdk/server` also hosts the route definitions and `Services` DI types so OpenAPI codegen can run without the backend; the backend composes the real implementations.
@@ -85,7 +85,7 @@ Text injected
 
 ## Release flow
 
-Run `pnpm release <version>` (e.g. `pnpm release 0.2.0`) to bump `package.json` and `packages/desktop/package.json`, generate a `CHANGELOG.md` entry from commits since the last tag, open a release PR on branch `chore/release-v<version>`, wait for checks and squash-merge it, then tag the merged commit on master and push the tag. Requires the `gh` CLI. Two workflows: `ci.yml` runs the gate suite (lint, format, typecheck, unit tests, Electron E2E under xvfb) on every PR and master push; `release.yml` is tag-triggered, re-runs the gates, then packages all three platforms and produces a GitHub release with the electron-updater metadata that clients poll. The tag must match `packages/desktop/package.json` version.
+Run `pnpm release <version>` (e.g. `pnpm release 0.2.0`) to bump `package.json` and `packages/desktop/package.json`, generate a `CHANGELOG.md` entry from commits since the last tag, open a release PR on branch `chore/release-v<version>`, wait for checks and squash-merge it, then tag the merged commit on master and push the tag. Requires the `gh` CLI. Two workflows: `ci.yml` runs the gate suite (lint, format, typecheck, unit tests, Electron E2E, macOS packaging) on a single macOS runner on every PR and master push; `release.yml` is tag-triggered, re-runs the gates, then packages all three platforms (one runner per platform) and produces a GitHub release with the electron-updater metadata that clients poll. The tag must match `packages/desktop/package.json` version.
 
 ## Code style
 

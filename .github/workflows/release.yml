@@ -12,7 +12,7 @@ permissions:
 jobs:
   gates:
     name: Gates (lint, typecheck, unit, e2e)
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -22,17 +22,16 @@ jobs:
         with:
           node-version: 24
 
+      - name: Get pnpm store directory
+        id: pnpm-store
+        run: echo "dir=$(pnpm store path)" >> "$GITHUB_OUTPUT"
+
       - name: Cache pnpm store
         uses: actions/cache@v4
         with:
-          path: ~/.local/share/pnpm/store
+          path: ${{ steps.pnpm-store.outputs.dir }}
           key: ${{ runner.os }}-pnpm-${{ hashFiles('pnpm-lock.yaml') }}
           restore-keys: ${{ runner.os }}-pnpm-
-
-      - name: Install dependencies (audio libs, X server for Electron)
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libasound2-dev libpulse-dev xvfb libnss3 libgtk-3-0 libxss1 libxtst6
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -53,7 +52,7 @@ jobs:
         run: pnpm -C packages/desktop build
 
       - name: E2E smoke tests
-        run: xvfb-run --auto-servernum pnpm -C packages/desktop test:e2e
+        run: pnpm -C packages/desktop test:e2e
 
       - name: Upload E2E failure context
         if: failure()
@@ -117,12 +116,6 @@ jobs:
           sudo security add-trusted-cert -d -r trustRoot -k "$RUNNER_TEMP/ci.keychain-db" "$RUNNER_TEMP/tyvox.crt"
           security set-key-partition-list -S apple-tool:,apple:,codesign: \
             -s -k ci-build "$RUNNER_TEMP/ci.keychain-db"
-
-      - name: Install dependencies (Linux audio libs)
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libasound2-dev libpulse-dev xorg-dev libxkbcommon-dev libxkbcommon-x11-dev
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

@@ -5,8 +5,8 @@ The Tyvox desktop app. An Electron main process (hotkeys, tray, windows, updater
 ## Commands
 
 ```bash
-pnpm dev          # electron-vite dev (expects the backend on 127.0.0.1:23456)
-pnpm build        # electron-vite build
+pnpm dev          # vite dev server + electron (expects the backend on 127.0.0.1:23456)
+pnpm build        # vite build (main, preload, renderer)
 pnpm test         # vitest (renderer + main-process unit tests)
 pnpm test:e2e     # Playwright Electron smoke tests — needs a display; use xvfb-run on Linux
 pnpm typecheck    # tsc for both tsconfig.web.json and tsconfig.node.json

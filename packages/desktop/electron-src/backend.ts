@@ -84,7 +84,7 @@ export function startBackend(settings: LocalSettings): Promise<string> {
 
       if (app.isPackaged) {
         const entry = join(process.resourcesPath, "backend", "index.mjs");
-        backendProcess = spawn(process.execPath, [entry], {
+        backendProcess = spawn(process.execPath, ["--use-system-ca", entry], {
           env: {
             ...process.env,
             ELECTRON_RUN_AS_NODE: "1",

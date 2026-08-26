@@ -22,4 +22,4 @@ RUN apt-get update \
 COPY --from=build /app/packages/backend/dist ./packages/backend/dist
 
 EXPOSE 23456
-CMD ["node", "packages/backend/dist/index.mjs"]
+CMD ["node", "--use-system-ca", "packages/backend/dist/index.mjs"]

@@ -23,16 +23,16 @@ export class ClipboardService {
       }
     }
 
-    const originalContent = this.#readClipboardSafely();
+    const originalContent = await this.#readClipboardSafely();
 
     let retries = 0;
     let written = false;
 
     while (retries < CLIPBOARD.INJECT_RETRY_MAX && !written) {
       try {
-        clipboard.writeText(text);
+        await clipboard.writeText(text);
 
-        const current = clipboard.readText();
+        const current = await clipboard.readText();
         if (current === text) {
           written = true;
         } else {
@@ -70,16 +70,16 @@ export class ClipboardService {
   async #restoreClipboard(originalContent: string | null): Promise<void> {
     if (originalContent !== null) {
       try {
-        clipboard.writeText(originalContent);
+        await clipboard.writeText(originalContent);
       } catch (error) {
         logger.warn("Failed to restore clipboard content", { error: String(error) });
       }
     }
   }
 
-  #readClipboardSafely(): string | null {
+  async #readClipboardSafely(): Promise<string | null> {
     try {
-      return clipboard.readText();
+      return await clipboard.readText();
     } catch {
       return null;
     }

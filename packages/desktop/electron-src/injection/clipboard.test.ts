@@ -52,10 +52,10 @@ describe("ClipboardService", () => {
     service = new ClipboardService();
 
     vi.mocked(systemPreferences.isTrustedAccessibilityClient).mockReturnValue(true);
-    vi.mocked(clipboard.writeText).mockImplementation((t: string) => {
+    vi.mocked(clipboard.writeText).mockImplementation(async (t: string) => {
       lastWritten = t;
     });
-    vi.mocked(clipboard.readText).mockImplementation(() => lastWritten);
+    vi.mocked(clipboard.readText).mockImplementation(async () => lastWritten);
     setPlatform("linux");
   });
 
@@ -128,7 +128,7 @@ describe("ClipboardService", () => {
 
     it("restores original clipboard content after inject", async () => {
       const original = "before-inject";
-      vi.mocked(clipboard.readText).mockImplementation(() =>
+      vi.mocked(clipboard.readText).mockImplementation(async () =>
         lastWritten === "" ? original : lastWritten,
       );
       await service.inject("injected");
@@ -158,7 +158,7 @@ describe("ClipboardService", () => {
 
   describe("clipboard write retry", () => {
     it("retries when readText does not match written text", async () => {
-      vi.mocked(clipboard.readText).mockImplementation(() => "stale");
+      vi.mocked(clipboard.readText).mockImplementation(async () => "stale");
       try {
         await service.inject("fresh");
         throw new Error("expected inject to reject");
