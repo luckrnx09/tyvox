@@ -1,13 +1,10 @@
 import { serve } from "@hono/node-server";
 import { DEFAULT_HOST, DEFAULT_PORT } from "@tyvox/sdk/constants";
 import { createApp } from "./server.js";
-import { installSystemCaCertificates } from "./utils/system-ca.js";
 import { startMemoryScheduler } from "./services/memory/scheduler.js";
 import { getLogger } from "./utils/logger.js";
 
 const systemLogger = getLogger("system");
-
-await installSystemCaCertificates();
 
 const app = createApp();
 const port = Number(process.env.TYVOX_PORT) || DEFAULT_PORT;

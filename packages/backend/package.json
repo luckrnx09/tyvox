@@ -4,30 +4,29 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "start": "node dist/index.mjs",
+    "dev": "NODE_USE_SYSTEM_CA=1 tsx watch src/index.ts",
+    "start": "node --use-system-ca dist/index.mjs",
     "build": "tsup src/index.ts --format esm",
     "eval": "tsx src/eval/run.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@hono/node-server": "^2.0.11",
-    "@hono/zod-openapi": "^1.5.1",
+    "@hono/node-server": "^2.1.1",
+    "@hono/zod-openapi": "^1.6.1",
     "@tyvox/sdk": "workspace:*",
-    "hono": "^4.12.31",
+    "hono": "^4.13.5",
     "pino": "^10.3.1",
     "pino-pretty": "^13.1.3",
     "pino-roll": "^4.0.0",
-    "undici": "^8.8.0",
     "yaml": "^2.9.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.3.0",
     "tsup": "^8.5.1",
-    "tsx": "^4.23.1",
+    "tsx": "^4.23.12",
     "typescript": "^7.0.2",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.11"
   }
 }
