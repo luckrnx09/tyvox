@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.16] - 2026-09-03
+
+### Added
+
+- feat: add Kimi For Coding provider and drop temperature for kimi models (#41)
+
+### Fixed
+
+- fix(desktop): open external links in system browser (#39)
+
+### Changed
+
+- docs: drop resolved get-started issue link from README (#40)
+
 ## [0.0.15] - 2026-08-26
 
 ### Fixed
