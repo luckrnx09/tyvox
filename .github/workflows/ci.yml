@@ -64,6 +64,6 @@ jobs:
           retention-days: 7
 
       - name: Verify macOS packaging
-        run: pnpm pack:mac -- --publish never
+        run: pnpm pack:mac --publish never
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
