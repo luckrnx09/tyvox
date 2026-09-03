@@ -22,6 +22,7 @@ export const LLMProviderSchema = z.enum([
   "dashscope",
   "zhipu",
   "moonshot",
+  "kimi-for-coding",
   "ollama",
   "gemini",
   "groq",

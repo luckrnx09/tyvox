@@ -535,6 +535,7 @@ paths:
                           - dashscope
                           - zhipu
                           - moonshot
+                          - kimi-for-coding
                           - ollama
                           - gemini
                           - groq
@@ -667,6 +668,7 @@ paths:
                         - dashscope
                         - zhipu
                         - moonshot
+                        - kimi-for-coding
                         - ollama
                         - gemini
                         - groq
@@ -804,6 +806,7 @@ paths:
                           - dashscope
                           - zhipu
                           - moonshot
+                          - kimi-for-coding
                           - ollama
                           - gemini
                           - groq
@@ -959,6 +962,7 @@ paths:
                         - dashscope
                         - zhipu
                         - moonshot
+                        - kimi-for-coding
                         - ollama
                         - gemini
                         - groq

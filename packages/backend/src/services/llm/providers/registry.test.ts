@@ -75,6 +75,14 @@ describe("thinkingBody", () => {
   });
 });
 
+describe("customizeBody", () => {
+  it.each(["moonshot", "kimi-for-coding"] as const)("removes temperature for %s models", (id) => {
+    const body: Record<string, unknown> = { model: "any-model", temperature: 0.3 };
+    LLM_PROVIDER_REGISTRY[id].customizeBody(body, "any-model");
+    expect("temperature" in body).toBe(false);
+  });
+});
+
 describe("resolveStrategy", () => {
   it("returns the registry entry for known providers", () => {
     expect(resolveStrategy("deepseek", "https://api.deepseek.com/v1").id).toBe("deepseek");
