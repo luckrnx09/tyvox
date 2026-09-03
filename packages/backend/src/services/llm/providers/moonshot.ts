@@ -36,4 +36,8 @@ export class MoonshotStrategy extends LLMProviderStrategy {
     }
     return null;
   }
+
+  customizeBody(body: Record<string, unknown>): void {
+    delete body.temperature;
+  }
 }

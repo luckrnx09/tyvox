@@ -6,6 +6,7 @@ import { DashScopeStrategy } from "./dashscope.js";
 import { DeepSeekStrategy } from "./deepseek.js";
 import { GeminiStrategy } from "./gemini.js";
 import { GroqStrategy } from "./groq.js";
+import { KimiForCodingStrategy } from "./kimi-for-coding.js";
 import { MiniMaxStrategy } from "./minimax.js";
 import { MoonshotStrategy } from "./moonshot.js";
 import { OllamaStrategy } from "./ollama.js";
@@ -26,6 +27,7 @@ export const LLM_PROVIDER_REGISTRY: Record<LLMProvider, LLMProviderStrategy> = {
   dashscope: new DashScopeStrategy(),
   zhipu: new ZhipuStrategy(),
   moonshot: new MoonshotStrategy(),
+  "kimi-for-coding": new KimiForCodingStrategy(),
   ollama: new OllamaStrategy(),
   gemini: new GeminiStrategy(),
   groq: new GroqStrategy(),
