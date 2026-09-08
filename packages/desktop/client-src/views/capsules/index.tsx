@@ -222,9 +222,15 @@ export const Capsule = () => {
     });
   }, [updateSettings]);
 
+  const handleCaptureError = useCallback((err: Error) => {
+    logger.error("Audio capture failed", { error: String(err) });
+    setError({ code: "AUDIO_CAPTURE_FAILED", message: err.message, recoverable: true });
+    setState("error");
+  }, []);
+
   const { startCapture, stopCapture, analyserRef } = useAudioCapture(
     handleChunk,
-    undefined,
+    handleCaptureError,
     micDeviceId,
     handleMicFallback,
   );

@@ -26,6 +26,7 @@ export function useAudioCapture(
   const processorRef = useRef<ScriptProcessorNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const capturingRef = useRef(false);
+  const generationRef = useRef(0);
   const [isCapturing, setIsCapturing] = useState(false);
 
   const onChunkRef = useRef(onChunk);
@@ -38,6 +39,7 @@ export function useAudioCapture(
   onDeviceFallbackRef.current = onDeviceFallback;
 
   const cleanup = useCallback(() => {
+    generationRef.current += 1;
     capturingRef.current = false;
     setIsCapturing(false);
     processorRef.current?.disconnect();
@@ -55,6 +57,9 @@ export function useAudioCapture(
   useEffect(() => cleanup, [cleanup]);
 
   const startCapture = useCallback(async () => {
+    generationRef.current += 1;
+    const generation = generationRef.current;
+    const isStale = () => generationRef.current !== generation;
     try {
       const usesSystemDefault = deviceIdRef.current === "default";
       const audioConstraints: MediaTrackConstraints = {
@@ -79,6 +84,12 @@ export function useAudioCapture(
         onDeviceFallbackRef.current?.();
         delete audioConstraints.deviceId;
         stream = await navigator.mediaDevices.getUserMedia({ audio: audioConstraints });
+      }
+      if (isStale()) {
+        for (const track of stream.getTracks()) {
+          track.stop();
+        }
+        return;
       }
       streamRef.current = stream;
 
@@ -112,9 +123,11 @@ export function useAudioCapture(
       capturingRef.current = true;
       setIsCapturing(true);
     } catch (error) {
+      if (isStale()) return;
+      cleanup();
       onError?.(error instanceof Error ? error : new Error(String(error)));
     }
-  }, [onError]);
+  }, [cleanup, onError]);
 
   const stopCapture = useCallback(() => {
     cleanup();
