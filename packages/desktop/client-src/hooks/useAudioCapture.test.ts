@@ -192,4 +192,57 @@ describe("useAudioCapture", () => {
     expect(onDeviceFallback).not.toHaveBeenCalled();
     expect(result.current.isCapturing).toBe(false);
   });
+
+  it("stops tracks when stopCapture runs while getUserMedia is pending", async () => {
+    const stop = vi.fn();
+    const fakeStream = { getTracks: () => [{ stop }] };
+    let resolveStream: (stream: MediaStream) => void = () => {};
+    const pending = new Promise<MediaStream>((resolve) => {
+      resolveStream = resolve;
+    });
+    vi.spyOn(navigator.mediaDevices, "getUserMedia").mockReturnValue(pending);
+
+    const { result } = renderHook(() => useAudioCapture(() => {}));
+    let startPromise: Promise<void> | undefined;
+    act(() => {
+      startPromise = result.current.startCapture();
+    });
+    act(() => {
+      result.current.stopCapture();
+    });
+    await act(async () => {
+      resolveStream(fakeStream as unknown as MediaStream);
+      await startPromise;
+    });
+
+    expect(stop).toHaveBeenCalledOnce();
+    expect(result.current.isCapturing).toBe(false);
+    expect(result.current.analyserRef.current).toBeNull();
+  });
+
+  it("releases the stream and reports an error when audio setup fails", async () => {
+    const stop = vi.fn();
+    const fakeStream = { getTracks: () => [{ stop }] };
+    vi.spyOn(navigator.mediaDevices, "getUserMedia").mockResolvedValue(
+      fakeStream as unknown as MediaStream,
+    );
+    vi.stubGlobal(
+      "AudioContext",
+      class {
+        constructor() {
+          throw new Error("audio backend unavailable");
+        }
+      },
+    );
+    const onError = vi.fn();
+
+    const { result } = renderHook(() => useAudioCapture(() => {}, onError));
+    await act(async () => {
+      await result.current.startCapture();
+    });
+
+    expect(onError).toHaveBeenCalledOnce();
+    expect(stop).toHaveBeenCalledOnce();
+    expect(result.current.isCapturing).toBe(false);
+  });
 });
