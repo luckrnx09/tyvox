@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.17] - 2026-09-08
+
+### Fixed
+
+- fix(desktop): release microphone when capture start is interrupted (#44)
+- fix(ci): pass --publish flag without stray -- separator (#43)
+
 ## [0.0.16] - 2026-09-03
 
 ### Added
